@@ -1,0 +1,48 @@
+#!/usr/bin/env ruby
+
+require 'kramdown/ansi'
+include Term::ANSIColor
+require 'shellwords'
+
+cmd = %{git log --color=always --pretty=format:"commit %H%C(auto)%d%nDate:   %Cgreen%cD (%cr)%Creset%nAuthor: %Cblue%an <%ae>%Creset%n%nMARKUP%n%s%n%n%b%nMARKDOWN%n"}
+
+core_pager     = `git config get core.pager`.chomp.full?
+git_pager      = ENV['GIT_PAGER'].full?
+default_pager  = ENV['PAGER'].full?
+if fallback_pager = `which less`.chomp.full? || `which more`.chomp.full?
+  fallback_pager << ' -r'
+end
+my_pager = git_pager || core_pager || default_pager || fallback_pager
+
+repo_url = case git_origin_url = `git remote get-url origin`.chomp
+           when %r(\Ahttps://)
+             u = git_origin_url.sub(%r(\.git\z), '')
+             u << '/commit/'
+           when %r(\Agit@github.com:([^.]+))
+             "https://github.com/#$1/commit/"
+           end
+
+Kramdown::ANSI::Pager.pager(command: my_pager) do |output|
+  IO.popen("#{cmd} #{Shellwords.join(ARGV)}") do |log|
+    until log.eof?
+      message = nil
+      log.each do |line|
+        case line
+        when /^MARKUP$/
+          message =  ''
+        when /^MARKDOWN$/
+          output.puts Kramdown::ANSI.parse(message + "\n---\n")
+          message = nil
+        else
+          if message
+            message << line
+          else
+            output.puts line.sub(/(?<=^commit )(\h{40})/) {
+              yellow { repo_url ? hyperlink(repo_url + $1) { $1 }  : $1 }
+            }
+          end
+        end
+      end
+    end
+  end
+end

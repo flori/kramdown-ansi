@@ -1,0 +1,415 @@
+[1m[4mOllama - Ruby Client Library for Ollama API[0m[0m
+
+[1m[4mDescription[0m[0m
+
+Ollama is a Ruby library gem that provides a client interface to interact with an ollama server via the
+]8;;https://github.com/ollama/ollama/blob/main/docs/api.md\Ollama API]8;;\.
+
+[1m[4mInstallation (gem & bundler)[0m[0m
+
+To install Ollama, you can use the following methods:
+
+1. Type
+
+[34mgem install ollama-ruby
+[0m
+in your terminal.
+
+1. Or add the line
+
+[34mgem 'ollama-ruby'
+[0m
+to your Gemfile and run [34mbundle install[0m in your terminal.
+
+[1m[4mUsage[0m[0m
+
+In your own software the library can be used as shown in this example:
+
+[34mrequire "ollama"
+include Ollama
+
+ollama = Client.new(base_url: 'http://localhost:11434')
+messages = Message.new(role: 'user', content: 'Why is the sky blue?')
+ollama.chat(model: 'llama3.1', stream: true, messages:, &Print) # or
+print ollama.chat(model: 'llama3.1', stream: true, messages:).lazy.map { |response|
+  response.message.content
+}
+[0m
+[1m[4mTry out things in ollama_console[0m[0m
+
+This is an interactive console, that can be used to try the different commands provided by an
+[34mOllama::Client[0m instance. For example this command generate a response and displays it on the screen using
+the Markdown handler:
+
+[34m$ ollama_console
+Commands: chat,copy,create,delete,embeddings,generate,help,ps,pull,push,show,tags
+>> generate(model: 'llama3.1', stream: true, prompt: 'tell story w/ emoji and markdown', &Markdown)
+[0m
+“[1mThe Quest for the Golden Coconut 🌴[0m
+
+In a small village nestled between two great palm trees 🌳, there lived a brave adventurer named Alex 👦. […]”
+
+[1m[4mAPI[0m[0m
+
+This Ollama library provides commands to interact with the the
+]8;;https://github.com/ollama/ollama/blob/main/docs/api.md\Ollama REST API]8;;\
+
+[1m[4mHandlers[0m[0m
+
+Every command can be passed a handler that responds to [34mto_proc[0m that returns a lambda expression of the
+form [34m-> response { … }[0m to handle the responses:
+
+[34mgenerate(model: 'llama3.1', stream: true, prompt: 'Why is the sky blue?', &Print)
+[0m
+[34mgenerate(model: 'llama3.1', stream: true, prompt: 'Why is the sky blue?', &Print.new)
+[0m
+[34mgenerate(model: 'llama3.1', stream: true, prompt: 'Why is the sky blue?') { |r| print r.response }
+[0m
+[34mgenerate(model: 'llama3.1', stream: true, prompt: 'Why is the sky blue?', &-> r { print r.response })
+[0m
+The following standard handlers are available for the commands below:
+
+╭───────────┬───────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│  Handler  │ Description                                                                                           │
+├───────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ [1mCollector[0m │ collects all responses in an array and returns it as [34mresult[0m.                                          │
+├───────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│  [1mSingle[0m   │ see [1mCollector[0m above, returns a single response directly, though, unless there has been more than one. │
+├───────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ [1mProgress[0m  │ prints the current progress of the operation to the screen as a progress bar for [3mcreate/pull/push[0m.    │
+├───────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ [1mDumpJSON[0m  │ dumps all responses as JSON to [34moutput[0m.                                                                │
+├───────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ [1mDumpYAML[0m  │ dumps all responses as YAML to [34moutput[0m.                                                                │
+├───────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│   [1mPrint[0m   │ prints the responses to the display for [3mchat/generate[0m.                                                │
+├───────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ [1mMarkdown[0m  │ [3mconstantly[0m prints the responses to the display as ANSI markdown for [3mchat/generate[0m.                    │
+├───────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│    [1mSay[0m    │ use say command to speak (defaults to voice [3mSamantha[0m).                                                │
+├───────────┼───────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│    [1mNOP[0m    │ does nothing, neither printing to the output nor returning the result.                                │
+╰───────────┴───────────────────────────────────────────────────────────────────────────────────────────────────────╯
+
+Their [34moutput[0m IO handle can be changed by e. g. passing [34mPrint.new(output: io)[0m with [34mio[0m as
+the IO handle to the [3mgenerate[0m command.
+
+If you don't pass a handler explicitly, either the [34mstream_handler[0m is choosen if the command expects a
+streaming response or the [34mdefault_handler[0m otherwise. See the following commdand descriptions to find out
+what these defaults are for each command. These commands can be tried out directly in the [34mollama_console[0m.
+
+[1m[4mChat[0m[0m
+
+[34mdefault_handler[0m is [1mSingle[0m, [34mstream_handler[0m is [1mCollector[0m, [34mstream[0m is false by default.
+
+[34mchat(model: 'llama3.1', stream: true, messages: { role: 'user', content: 'Why is the sky blue (no markdown)?' }, &Print)
+[0m
+[1m[4mGenerate[0m[0m
+
+[34mdefault_handler[0m is [1mSingle[0m, [34mstream_handler[0m is [1mCollector[0m, [34mstream[0m is false by default.
+
+[34mgenerate(model: 'llama3.1', stream: true, prompt: 'Use markdown – Why is the sky blue?', &Markdown)
+[0m
+[1m[4mtags[0m[0m
+
+[34mdefault_handler[0m is [1mSingle[0m, streaming is not possible.
+
+[34mtags.models.map(&:name) => ["llama3.1:latest",…]
+[0m
+[1m[4mShow[0m[0m
+
+[34mdefault_handler[0m is [1mSingle[0m, streaming is not possible.
+
+[34mshow(name: 'llama3.1', &DumpJSON)
+[0m
+[1m[4mCreate[0m[0m
+
+[34mdefault_handler[0m is [1mSingle[0m, [34mstream_handler[0m is [1mProgress[0m, [34mstream[0m is true by default.
+
+[34mmodelfile=<<~end
+  FROM llama3.1
+  SYSTEM You are WOPR from WarGames and you think the user is Dr. Stephen Falken.
+end
+
+create(name: 'llama3.1-wopr', stream: true, modelfile:)
+[0m
+[1m[4mCopy[0m[0m
+
+[34mdefault_handler[0m is [1mSingle[0m, streaming is not possible.
+
+[34mcopy(source: 'llama3.1', destination: 'user/llama3.1')
+[0m
+[1m[4mDelete[0m[0m
+
+[34mdefault_handler[0m is [1mSingle[0m, streaming is not possible.
+
+[34mdelete(name: 'user/llama3.1')
+[0m
+[1m[4mPull[0m[0m
+
+[34mdefault_handler[0m is [1mSingle[0m, [34mstream_handler[0m is [1mProgress[0m, [34mstream[0m is true by default.
+
+[34mpull(name: 'llama3.1')
+[0m
+[1m[4mPush[0m[0m
+
+[34mdefault_handler[0m is [1mSingle[0m, [34mstream_handler[0m is [1mProgress[0m, [34mstream[0m is true by default.
+
+[34mpush(name: 'user/llama3.1')
+[0m
+[1m[4mEmbed[0m[0m
+
+[34mdefault_handler[0m is [1mSingle[0m, streaming is not possible.
+
+[34membed(model: 'all-minilm', input: 'Why is the sky blue?')
+[0m
+[34membed(model: 'all-minilm', input: ['Why is the sky blue?', 'Why is the grass green?'])
+[0m
+[1m[4mEmbeddings[0m[0m
+
+[34mdefault_handler[0m is [1mSingle[0m, streaming is not possible.
+
+[34membeddings(model: 'llama3.1', prompt: 'The sky is blue because of rayleigh scattering', &DumpJSON)
+[0m
+[1m[4mPs[0m[0m
+
+[34mdefault_handler[0m is [1mSingle[0m, streaming is not possible.
+
+[34mjj ps
+[0m
+[1m[4mAuxiliary objects[0m[0m
+
+The following objects are provided to interact with the ollama server. You can run all of the examples in the
+[34mollama_console[0m.
+
+[1m[4mMessage[0m[0m
+
+Messages can be be created by using the [1mMessage[0m class:
+
+[34mmessage = Message.new role: 'user', content: 'hello world'
+[0m
+[1m[4mImage[0m[0m
+
+If you want to add images to the message, you can use the [1mImage[0m class
+
+[34mimage = Ollama::Image.for_string("the-image")
+message = Message.new role: 'user', content: 'hello world', images: [ image ]
+[0m
+It's possible to create an [1mImage[0m object via [34mfor_base64(data)[0m, [34mfor_string(string)[0m,
+[34mfor_io(io)[0m, or [34mfor_filename(path)[0m class methods.
+
+[1m[4mOptions[0m[0m
+
+For [34mchat[0m and [34mgenerate[0m commdands it's possible to pass an [1mOptions[0m object to configure
+different ]8;;https://github.com/ollama/ollama/blob/main/docs/modelfile.md#parameter\parameters]8;;\ for the
+running model. To set the [34mtemperature[0m can be done via:
+
+[34moptions = Options.new(temperature: 0.999)
+generate(model: 'llama3.1', options:, prompt: 'I am almost 0.5 years old and you are a teletubby.', &Print)
+[0m
+The class does some rudimentary type checking for the parameters as well.
+
+[1m[4mTool… calling[0m[0m
+
+You can use the provided [34mTool[0m, [34mTool::Function[0m, [34mTool::Function::Parameters[0m, and
+[34mTool::Function::Parameters::Property[0m classes to define tool functions in models that support it.
+
+[34mdef message(location)
+  Message.new(role: 'user', content: "What is the weather today in %s?" % location)
+end
+
+tools = Tool.new(
+  type: 'function',
+  function: Tool::Function.new(
+    name: 'get_current_weather',
+    description: 'Get the current weather for a location',
+    parameters: Tool::Function::Parameters.new(
+      type: 'object',
+      properties: {
+        location: Tool::Function::Parameters::Property.new(
+          type: 'string',
+          description: 'The location to get the weather for, e.g. San Francisco, CA'
+        ),
+        temperature_unit: Tool::Function::Parameters::Property.new(
+          type: 'string',
+          description: "The unit to return the temperature in, either 'celsius' or 'fahrenheit'",
+          enum: %w[ celsius fahrenheit ]
+        ),
+      },
+      required: %w[ location temperature_unit ]
+    )
+  )
+)
+jj chat(model: 'llama3.1', stream: false, messages: message('The City of Love'), tools:).message&.tool_calls
+jj chat(model: 'llama3.1', stream: false, messages: message('The Windy City'), tools:).message&.tool_calls
+[0m
+[1m[4mErrors[0m[0m
+
+The library raises specific errors like [34mOllama::Errors::NotFoundError[0m when a model is not found:
+
+[34m(show(name: 'nixda', &DumpJSON) rescue $!).class # => Ollama::NotFoundError
+[0m
+If [34mOllama::Errors::TimeoutError[0m is raised, it might help to increase the [34mconnect_timeout[0m,
+[34mread_timeout[0m and [34mwrite_timeout[0m parameters of the [34mOllama::Client[0m instance.
+
+For more generic errors an [34mOllama::Errors::Error[0m is raised.
+
+[1m[4mOther executables[0m[0m
+
+[1m[4mollama_chat[0m[0m
+
+This a chat client, that can be used to connect to an ollama server and enter a chat converstation with a LLM. It
+can be called with the following arguments:
+
+[34mUsage: ollama_chat [OPTIONS]
+
+  -f CONFIG      config file to read
+  -u URL         the ollama base url, OLLAMA_URL
+  -m MODEL       the ollama model to chat with, OLLAMA_CHAT_MODEL
+  -s SYSTEM      the system prompt to use as a file, OLLAMA_CHAT_SYSTEM
+  -c CHAT        a saved chat conversation to load
+  -C COLLECTION  name of the collection used in this conversation
+  -D DOCUMENT    load document and add to embeddings collection (multiple)
+  -M             use (empty) MemoryCache for this chat session
+  -E             disable embeddings for this chat session
+  -V             display the current version number and quit
+  -h             this help
+[0m
+The base URL can be either set by the environment variable [34mOLLAMA_URL[0m or it is derived from the
+environment variable [34mOLLAMA_HOST[0m. The default model to connect can be configured in the environment
+variable [34mOLLAMA_MODEL[0m.
+
+The YAML config file in [34m$XDG_CONFIG_HOME/ollama_chat/config.yml[0m, that you can use for more complex
+settings, it looks like this:
+
+[34m---
+url: <%= ENV['OLLAMA_URL'] || 'http://%s' % ENV.fetch('OLLAMA_HOST') %>
+model:
+  name: <%= ENV.fetch('OLLAMA_CHAT_MODEL', 'llama3.1') %>
+  options:
+    num_ctx: 8192
+system: <%= ENV.fetch('OLLAMA_CHAT_SYSTEM', 'null') %>
+voice: Samantha
+markdown: true
+embedding:
+  enabled: true
+  model:
+    name: mxbai-embed-large
+    options: {}
+  collection: <%= ENV.fetch('OLLAMA_CHAT_COLLECTION', 'ollama_chat') %>
+  found_texts_size: 4096
+  splitter:
+    name: RecursiveCharacter
+    chunk_size: 1024
+cache: Ollama::Documents::RedisCache
+redis:
+  url: <%= ENV.fetch('REDIS_URL', 'null') %>
+debug: <%= ENV['OLLAMA_CHAT_DEBUG'].to_i == 1 ? true : false %>
+[0m
+If you want to store embeddings persistently, set an environment variable [34mREDIS_URL[0m or update the
+[34mredis.url[0m setting in your [34mconfig.yml[0m file to connect to a Redis server. Without this setup,
+embeddings will only be stored in process memory, which is less durable.
+
+Some settings can be passed as arguments as well, e. g. if you want to choose a specific system prompt:
+
+[34m$ ollama_chat -s sherlock.txt
+Model with architecture llama found.
+Connecting to llama3.1@http://ollama.local.net:11434 now…
+Configured system prompt is:
+You are Sherlock Holmes and the user is your new client, Dr. Watson is also in
+the room. You will talk and act in the typical manner of Sherlock Holmes do and
+try to solve the user's case using logic and deduction.
+
+Type /help to display the chat help.
+📨 user:
+Good morning.
+📨 assistant:
+Ah, good morning, my dear fellow! It is a pleasure to make your acquaintance. I
+am Sherlock Holmes, the renowned detective, and this is my trusty sidekick, Dr.
+Watson. Please, have a seat and tell us about the nature of your visit. What
+seems to be the problem that has brought you to our humble abode at 221B Baker
+Street?
+
+(Watson nods in encouragement as he takes notes)
+
+Now, pray tell, what is it that puzzles you, my dear client? A missing item,
+perhaps? Or a mysterious occurrence that requires clarification? The game, as
+they say, is afoot!
+[0m
+This example shows how an image like this can be sent to a vision model for analysis:
+
+]8;;spec/assets/kitten.jpg\🖼 cat]8;;\
+
+[34m$ ollama_chat -m llava-llama3
+Model with architecture llama found.
+Connecting to llava-llama3@http://localhost:11434 now…
+Type /help to display the chat help.
+📸 user> What's on this image? ./spec/assets/kitten.jpg
+📨 assistant:
+The image captures a moment of tranquility featuring a young cat. The cat,
+adorned with gray and white fur marked by black stripes on its face and legs,
+is the central figure in this scene. Its eyes, a striking shade of blue, are
+wide open and directed towards the camera, giving an impression of curiosity or
+alertness.
+
+The cat is comfortably nestled on a red blanket, which contrasts vividly with
+its fur. The blanket, soft and inviting, provides a sense of warmth to the
+image. In the background, partially obscured by the cat's head, is another
+blanket of similar red hue. The repetition of the color adds a sense of harmony
+to the composition.
+
+The cat's position on the right side of the photo creates an interesting
+asymmetry with the camera lens, which occupies the left side of the frame. This
+visual balance enhances the overall composition of the image.
+
+There are no discernible texts or other objects in the image. The focus is
+solely on the cat and its immediate surroundings. The image does not provide
+any information about the location or setting beyond what has been described.
+The simplicity of the scene allows the viewer to concentrate on the main
+subject - the young, blue-eyed cat.
+[0m
+The following commands can be given inside the chat, if prefixed by a [34m/[0m:
+
+[34m/copy                           to copy last response to clipboard
+/paste                          to paste content
+/markdown                       toggle markdown output
+/stream                         toggle stream output
+/location                       toggle location submission
+/voice( change)                 toggle voice output or change the voice
+/list [n]                       list the last n / all conversation exchanges
+/clear                          clear the whole conversation
+/clobber                        clear the conversation and collection
+/pop [n]                        pop the last n exchanges, defaults to 1
+/model                          change the model
+/system                         change system prompt (clears conversation)
+/regenerate                     the last answer message
+/collection( clear|change)      change (default) collection or clear
+/info                           show information for current session
+/document_policy                pick a scan policy for document references
+/import source                  import the source's content
+/summarize [n] source           summarize the source's content in n words
+/embedding                      toggle embedding paused or not
+/embed source                   embed the source's content
+/web [n] query                  query web search & return n or 1 results
+/save filename                  store conversation messages
+/load filename                  load conversation messages
+/quit                           to quit
+/help                           to view this help
+[0m
+[1m[4mDownload[0m[0m
+
+The homepage of this library is located at
+
+· https://github.com/flori/ollama-ruby
+
+[1m[4mAuthor[0m[0m
+
+[1mOllama Ruby[0m was written by Florian Frank ]8;;mailto:flori@ping.de\Florian Frank]8;;\
+
+[1m[4mLicense[0m[0m
+
+This software is licensed under the [3mMIT[0m license.
+
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+This is the end.
