@@ -13,6 +13,12 @@ class Kramdown::ANSI < Kramdown::Converter::Base
   include Term::ANSIColor
   include Kramdown::ANSI::Width
 
+  module Terminal::Table::Util
+    def self.ansi_escape(line)
+      line.to_s.gsub(/\e\[.*?m|\e\].*?(\e|\a)\\?/, '')
+    end
+  end
+
   class ::Kramdown::Parser::Mygfm <  ::Kramdown::Parser::GFM
     def initialize(source, options)
       options[:gfm_quirks] << :no_auto_typographic

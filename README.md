@@ -39,8 +39,8 @@ puts Kramdown::ANSI.parse(markdown)
 
 | Method | Description |
 | :----- | :---------- |
-| `md` executable | Outputs Markdown files with ANSI escape sequences in the terminal |
-| `git-md` executable | A Git plugin that outputs Markdown formatted git commit messages into the terminal |
+| `md` executable | Outputs [Markdown](https://spec.commonmark.org/current/) files with ANSI escape sequences in the terminal |
+| `git-md` executable | A Git plugin that outputs [Markdown](https://spec.commonmark.org/current/) formatted git commit messages into the terminal |
 
 ### The md executable
 
