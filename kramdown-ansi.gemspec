@@ -1,14 +1,14 @@
 # -*- encoding: utf-8 -*-
-# stub: kramdown-ansi 0.0.1 ruby lib
+# stub: kramdown-ansi 0.0.2 ruby lib
 
 Gem::Specification.new do |s|
   s.name = "kramdown-ansi".freeze
-  s.version = "0.0.1".freeze
+  s.version = "0.0.2".freeze
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0".freeze) if s.respond_to? :required_rubygems_version=
   s.require_paths = ["lib".freeze]
   s.authors = ["Florian Frank".freeze]
-  s.date = "2024-10-31"
+  s.date = "2024-12-08"
   s.description = "Kramdown::ANSI: A library for rendering Markdown(ish) documents with\nbeautiful ANSI escape sequences in the terminal.\n".freeze
   s.email = "flori@ping.de".freeze
   s.executables = ["md".freeze, "git-md".freeze]
@@ -18,7 +18,7 @@ Gem::Specification.new do |s|
   s.licenses = ["MIT".freeze]
   s.rdoc_options = ["--title".freeze, "Kramdown-ansi - Output markdown in the terminal with ANSI escape sequences".freeze, "--main".freeze, "README.md".freeze]
   s.required_ruby_version = Gem::Requirement.new("~> 3.1".freeze)
-  s.rubygems_version = "3.5.22".freeze
+  s.rubygems_version = "3.5.23".freeze
   s.summary = "Output markdown in the terminal with ANSI escape sequences".freeze
   s.test_files = ["spec/kramdown/ansi/pager_spec.rb".freeze, "spec/kramdown/ansi/width_spec.rb".freeze, "spec/kramdown/ansi_spec.rb".freeze, "spec/spec_helper.rb".freeze]
 
