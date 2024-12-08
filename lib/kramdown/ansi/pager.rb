@@ -1,4 +1,5 @@
 require 'tins/terminal'
+require 'term/ansicolor'
 
 module Kramdown::ANSI::Pager
   module_function
@@ -18,10 +19,16 @@ module Kramdown::ANSI::Pager
         IO.popen(my_pager, 'w') do |output|
           output.sync = true
           yield output
+        rescue Interrupt, Errno::EPIPE
+          pager_reset_screen
+          return nil
+        ensure
           output.close
         end
+        my_pager
       else
         yield STDOUT
+        nil
       end
     else
       return unless STDOUT.tty?
@@ -33,5 +40,12 @@ module Kramdown::ANSI::Pager
         command
       end
     end
+  end
+
+  # Resets the terminal screen by printing ANSI escape codes for reset, clear
+  # screen, move home and show cursor.
+  def pager_reset_screen
+    c = Term::ANSIColor
+    STDOUT.print c.reset, c.clear_screen, c.move_home, c.show_cursor
   end
 end

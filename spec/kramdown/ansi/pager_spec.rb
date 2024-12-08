@@ -38,13 +38,41 @@ RSpec.describe Kramdown::ANSI::Pager do
       it 'can output to the command for paging if enough lines' do
         expect(Tins::Terminal).to receive(:lines).and_return 25
         block_called = false
-        Kramdown::ANSI::Pager.pager(command: command, lines: 30) do |output|
+        result = Kramdown::ANSI::Pager.pager(command: command, lines: 30) do |output|
           expect(output).to be_a IO
           expect(output).not_to eq STDOUT
           block_called = true
         end
         expect(block_called).to eq true
+        expect(result).to eq command
       end
+
+      it 'closes output for Interrupt' do
+        expect(Tins::Terminal).to receive(:lines).and_return 25
+        block_called = false
+        expect_any_instance_of(IO).to receive(:sync=).and_raise Interrupt
+        expect_any_instance_of(IO).to receive(:close).and_call_original
+        expect(described_class).to receive(:pager_reset_screen)
+        result = Kramdown::ANSI::Pager.pager(command: command, lines: 30) do |output|
+          block_called = true
+        end
+        expect(block_called).to eq false
+        expect(result).to be_nil
+      end
+
+      it 'closes output for Errno::EPIPE' do
+        expect(Tins::Terminal).to receive(:lines).and_return 25
+        block_called = false
+        expect_any_instance_of(IO).to receive(:sync=).and_raise Errno::EPIPE
+        expect_any_instance_of(IO).to receive(:close).and_call_original
+        expect(described_class).to receive(:pager_reset_screen)
+        result = Kramdown::ANSI::Pager.pager(command: command, lines: 30) do |output|
+          block_called = true
+        end
+        expect(block_called).to eq false
+        expect(result).to be_nil
+      end
+
 
       it 'can output STDOUT if not enough lines' do
         expect(Tins::Terminal).to receive(:lines).and_return 25
