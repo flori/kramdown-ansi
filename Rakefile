@@ -19,7 +19,7 @@ GemHadar do
     '.yardoc', 'doc', 'tags', 'errors.lst', 'cscope.out', 'coverage', 'tmp',
     'yard'
   package_ignore '.all_images.yml', '.tool-versions', '.gitignore', 'VERSION',
-     '.rspec', *Dir.glob('.github/**/*', File::FNM_DOTMATCH)
+    '.rspec', *Dir.glob('.github/**/*', File::FNM_DOTMATCH)
   readme      'README.md'
 
   executables << 'md' << 'git-md'

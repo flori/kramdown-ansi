@@ -62,6 +62,10 @@ open a pager command like `less` or `more` and pipes its output into it.
 By setting the `PAGER` environment variable accordingly one can define a custom
 command for this purpose.
 
+The output of the `md` command can be seen in this screenshot:
+
+![md output](./img/md.png)
+
 ### The git-md executable
 
 The `git-md` executable is a git plugin that can be used to output markdown
@@ -85,6 +89,11 @@ pager command was defined setting `git config set core.pager FOO`, in which
 case the FOO command is used as a pager for all git commands including `git
 md`.
 
+The output of the `git md` command can be seen in this screenshot:
+
+![git md output](./img/git-md.png)
+
+
 ## Download
 
 The homepage of this library is located at
@@ -101,7 +110,7 @@ This software is licensed under the <i>MIT</i> license.
 
 ## Mandatory Kitten Image
 
-![cat](spec/assets/kitten.jpg)
+![cat](./spec/assets/kitten.jpg)
 
 ---
 
