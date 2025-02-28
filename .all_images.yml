@@ -1,5 +1,5 @@
 dockerfile: |-
-  RUN apk add --no-cache build-base git
+  RUN apk add --no-cache build-base yaml-dev git
 
 script: &script |-
   echo -e "\e[1m"
