@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0".freeze) if s.respond_to? :required_rubygems_version=
   s.require_paths = ["lib".freeze]
   s.authors = ["Florian Frank".freeze]
-  s.date = "2024-12-09"
+  s.date = "2025-02-28"
   s.description = "Kramdown::ANSI: A library for rendering Markdown(ish) documents with\nbeautiful ANSI escape sequences in the terminal.\n".freeze
   s.email = "flori@ping.de".freeze
   s.executables = ["md".freeze, "git-md".freeze]
@@ -18,13 +18,13 @@ Gem::Specification.new do |s|
   s.licenses = ["MIT".freeze]
   s.rdoc_options = ["--title".freeze, "Kramdown-ansi - Output markdown in the terminal with ANSI escape sequences".freeze, "--main".freeze, "README.md".freeze]
   s.required_ruby_version = Gem::Requirement.new("~> 3.1".freeze)
-  s.rubygems_version = "3.5.23".freeze
+  s.rubygems_version = "3.6.2".freeze
   s.summary = "Output markdown in the terminal with ANSI escape sequences".freeze
   s.test_files = ["spec/kramdown/ansi/pager_spec.rb".freeze, "spec/kramdown/ansi/width_spec.rb".freeze, "spec/kramdown/ansi_spec.rb".freeze, "spec/spec_helper.rb".freeze]
 
   s.specification_version = 4
 
-  s.add_development_dependency(%q<gem_hadar>.freeze, ["~> 1.19".freeze])
+  s.add_development_dependency(%q<gem_hadar>.freeze, ["~> 1.20".freeze])
   s.add_development_dependency(%q<all_images>.freeze, ["~> 0.4".freeze])
   s.add_development_dependency(%q<rspec>.freeze, ["~> 3.2".freeze])
   s.add_development_dependency(%q<debug>.freeze, [">= 0".freeze])
