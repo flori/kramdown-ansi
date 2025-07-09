@@ -6,7 +6,7 @@ require 'shellwords'
 
 cmd = %{git log --color=always --pretty=format:"commit %H%C(auto)%d%nDate:   %Cgreen%cD (%cr)%Creset%nAuthor: %Cblue%an <%ae>%Creset%n%nMARKUP%n%s%n%n%b%nMARKDOWN%n"}
 
-core_pager     = `git config get core.pager`.chomp.full?
+core_pager     = `git config --get core.pager`.chomp.full?
 git_pager      = ENV['GIT_PAGER'].full?
 default_pager  = ENV['PAGER'].full?
 if fallback_pager = `which less`.chomp.full? || `which more`.chomp.full?
