@@ -1,5 +1,11 @@
 # Changes
 
+## 2025-07-09 v0.0.4
+
+* **Pager Detection Update**
+  + Updated pager detection to use the `--get` option with `git config` instead
+    of `get`.
+
 ## 2025-02-28 v0.0.3
 
 * Improve `all_images` testing
