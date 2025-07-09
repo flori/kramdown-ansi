@@ -4,7 +4,7 @@
 
 * **Pager Detection Update**
   + Updated pager detection to use the `--get` option with `git config` instead
-    of `get`.
+    of `get` in `git-md`.
 
 ## 2025-02-28 v0.0.3
 
