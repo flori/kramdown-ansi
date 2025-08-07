@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe Kramdown::ANSI::Width do
+describe Kramdown::ANSI::Width do
   before do
     allow(Tins::Terminal).to receive(:columns).and_return 80
   end

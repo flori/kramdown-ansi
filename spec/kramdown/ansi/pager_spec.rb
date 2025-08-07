@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe Kramdown::ANSI::Pager do
+describe Kramdown::ANSI::Pager do
   let :command do
     'cat'
   end
