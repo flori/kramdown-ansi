@@ -1,6 +1,18 @@
 require 'tins/terminal'
 require 'term/ansicolor'
 
+# A module that provides functionality for calculating terminal width
+# percentages and wrapping/truncating text accordingly.
+#
+# The Width module includes methods to determine the available terminal width
+# based on a percentage, and provides text wrapping and truncation capabilities
+# that respect terminal dimensions.
+#
+# @example Wrapping text to 80% of terminal width
+#   Kramdown::ANSI::Width.wrap("This is a long line of text", percentage: 80)
+#
+# @example Truncating text to 50 characters
+#   Kramdown::ANSI::Width.truncate("This is a long line of text", length: 50)
 module Kramdown::ANSI::Width
   include Term::ANSIColor
   extend Term::ANSIColor

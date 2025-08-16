@@ -4,6 +4,12 @@ require 'kramdown/ansi'
 include Term::ANSIColor
 require 'shellwords'
 
+ansi_styles =
+  if env_var = %w[ KRAMDOWN_ANSI_GIT_MD_STYLES KRAMDOWN_ANSI_STYLES ].find { ENV.key?(_1) }
+    Kramdown::ANSI::Styles.from_env_var(env_var).ansi_styles
+  else
+    Kramdown::ANSI::Styles.new.ansi_styles
+  end
 cmd = %{git log --color=always --pretty=format:"commit %H%C(auto)%d%nDate:   %Cgreen%cD (%cr)%Creset%nAuthor: %Cblue%an <%ae>%Creset%n%nMARKUP%n%s%n%n%b%nMARKDOWN%n"}
 
 core_pager     = `git config --get core.pager`.chomp.full?
@@ -31,7 +37,7 @@ Kramdown::ANSI::Pager.pager(command: my_pager) do |output|
         when /^MARKUP$/
           message =  ''
         when /^MARKDOWN$/
-          output.puts Kramdown::ANSI.parse(message + "\n---\n")
+          output.puts Kramdown::ANSI.parse(message + "\n---\n", ansi_styles:)
           message = nil
         else
           if message

@@ -2,7 +2,13 @@
 
 require 'kramdown/ansi'
 
-rendered      = Kramdown::ANSI.parse(ARGF.read)
+ansi_styles =
+  if env_var = %w[ KRAMDOWN_ANSI_MD_STYLES KRAMDOWN_ANSI_STYLES ].find { ENV.key?(_1) }
+    Kramdown::ANSI::Styles.from_env_var(env_var).ansi_styles
+  else
+    Kramdown::ANSI::Styles.new.ansi_styles
+  end
+rendered      = Kramdown::ANSI.parse(ARGF.read, ansi_styles:)
 default_pager = ENV['PAGER'].full?
 if fallback_pager = `which less`.chomp.full? || `which more`.chomp.full?
   fallback_pager << ' -r'

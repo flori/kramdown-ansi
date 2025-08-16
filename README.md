@@ -2,8 +2,8 @@
 
 ## Description
 
-Kramdown::ANSI: A library for rendering Markdown(ish) documents with beautiful
-ANSI escape sequences in the terminal.
+**Kramdown::ANSI**: A library for rendering Markdown(ish) documents with beautiful
+ANSI escape sequences _in the terminal_.
 
 ## Installation (gem &amp; bundler)
 
@@ -35,12 +35,59 @@ require 'kramdown/ansi'
 puts Kramdown::ANSI.parse(markdown)
 ```
 
+### Custom ANSI Styles
+
+You can customize the ANSI styles by passing an `ansi_styles` option:
+
+```ruby
+require 'kramdown/ansi'
+
+ansi_styles = {
+  header: [:bold, :magenta],
+  strong: :green,
+  em:     :yellow,
+  code:   [:cyan, :underline]
+}
+
+puts Kramdown::ANSI.parse(markdown, ansi_styles:)
+```
+
+### Custom ANSI Styles from JSON and JSON env vars
+
+You can configure ANSI styles programmatically from JSON using the built-in
+methods:
+
+```ruby
+require 'kramdown/ansi'
+
+# Using from_json method
+json_config = '{"header": ["bold", "magenta"], "code": ["cyan", "underline"]}'
+ansi_styles = Kramdown::ANSI::Styles.from_json(json_config)
+
+# Apply to parsing
+puts Kramdown::ANSI.parse(markdown, ansi_styles:)
+
+# Using from_env_var method  
+ENV['MY_STYLES'] = '{"em": "yellow", "strong": "green"}'
+ansi_styles = Kramdown::ANSI::Styles.from_env_var('MY_STYLES')
+
+# Apply to parsing
+puts Kramdown::ANSI.parse(markdown, ansi_styles:)
+```
+
 ## Executables
 
-| Method | Description |
-| :----- | :---------- |
-| `md` executable | Outputs [Markdown](https://spec.commonmark.org/current/) files with ANSI escape sequences in the terminal |
-| `git-md` executable | A Git plugin that outputs [Markdown](https://spec.commonmark.org/current/) formatted git commit messages into the terminal |
+| Method | Description | Environment Variables |
+| :------- | :---------- | :-------------------- |
+| `md` executable | Outputs [Markdown](https://spec.commonmark.org/current/) files with ANSI escape sequences in the terminal | `PAGER`, `KRAMDOWN_ANSI_MD_STYLES`, `KRAMDOWN_ANSI_STYLES` |
+| `git-md` executable | A Git plugin that outputs [Markdown](https://spec.commonmark.org/current/) formatted git commit messages into the terminal | `PAGER`, `GIT_PAGER`, `KRAMDOWN_ANSI_GIT_MD_STYLES`, `KRAMDOWN_ANSI_STYLES` |
+
+The `md` executable first checks for `KRAMDOWN_ANSI_MD_STYLES` environment
+variable, and if not found, falls back to `KRAMDOWN_ANSI_STYLES`. These
+variables can be used to customize ANSI styles for Markdown rendering. The
+`git-md` executable follows the same pattern, checking
+`KRAMDOWN_ANSI_GIT_MD_STYLES` first, then `KRAMDOWN_ANSI_STYLES`, allowing
+customization of ANSI styles for Git commit message formatting.
 
 ### The md executable
 
@@ -65,6 +112,14 @@ command for this purpose.
 The output of the `md` command can be seen in this screenshot:
 
 ![md output](./img/md.png)
+
+
+### Example: Configuring `md` with Specific Environment Variable
+
+```bash
+# Using KRAMDOWN_ANSI_MD_STYLES (most specific for md executable)
+KRAMDOWN_ANSI_MD_STYLES='{"header": ["bold", "magenta"], "code": ["cyan", "underline"]}' md README.md
+```
 
 ### The git-md executable
 
@@ -93,6 +148,12 @@ The output of the `git md` command can be seen in this screenshot:
 
 ![git md output](./img/git-md.png)
 
+### Example: Configuring `git-md` with Specific Environment Variable
+
+```bash
+# Using KRAMDOWN_ANSI_GIT_MD_STYLES (most specific for git-md executable)
+KRAMDOWN_ANSI_GIT_MD_STYLES='{"header": ["bold", "blue"], "code": "red"}' git md
+```
 
 ## Download
 

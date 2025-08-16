@@ -29,6 +29,7 @@ GemHadar do
   dependency             'term-ansicolor',        '~> 1.11'
   dependency             'kramdown-parser-gfm',   '~> 1.1'
   dependency             'terminal-table',        '~> 3.0'
+  dependency             'json',                  '~> 2.0'
   development_dependency 'all_images',            '~> 0.4'
   development_dependency 'rspec',                 '~> 3.2'
   development_dependency 'debug'
