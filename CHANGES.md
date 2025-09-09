@@ -1,5 +1,19 @@
 # Changes
 
+## 2025-09-09 v0.1.1
+
+- Updated Ruby version requirement from **~> 3.1** to **~> 3.0** in `Rakefile`
+  and `kramdown-ansi.gemspec`
+- Bumped `gem_hadar` development dependency from `"~> 2.0"` to `"~> 2.2"` in
+  `kramdown-ansi.gemspec`
+- Added `ignored` parameter to `as_json` method signature in
+  `lib/kramdown/ansi/styles.rb`
+- Added `args` parameter to `to_json` method signature and passed it through to
+  `as_json.to_json` in `lib/kramdown/ansi/styles.rb`
+- Added support for Ruby versions **3.1** and **3.0** in CI pipeline
+- Included `ruby:3.1-alpine` and `ruby:3.0-alpine` image configurations
+- Updated Dockerfile with `RUN gem install bundler gem_hadar` instruction
+
 ## 2025-08-17 v0.1.0
 
 - Added comprehensive ANSI style configuration support with
