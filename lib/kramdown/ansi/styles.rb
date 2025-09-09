@@ -109,8 +109,9 @@ class Kramdown::ANSI::Styles
   # The as_json method converts the current ANSI styles configuration into a
   # JSON-serializable format.
   #
+  # @param ignored [Array] ignored args
   # @return [Hash] A hash representation of the current ANSI styles configuration.
-  def as_json(*)
+  def as_json(*ignored)
     @ansi_styles
   end
 
@@ -121,9 +122,10 @@ class Kramdown::ANSI::Styles
   # The to_json method converts the current ANSI styles configuration into a
   # JSON-serializable format.
   #
+  # @param args [Array] pass-through args
   # @return [String] A JSON string representation of the current ANSI styles
   # configuration.
-  def to_json(*)
-    as_json.to_json(*)
+  def to_json(*args)
+    as_json.to_json(*args)
   end
 end
