@@ -1,5 +1,12 @@
 # Changes
 
+## 2025-09-09 v0.2.0
+
+- Updated required Ruby version requirement from **~> 3.0** to **~> 3.1**
+- Dropped support for Ruby version **3.0**
+- Removed `ruby:3.0-alpine` from `.all_images.yml`
+- Updated `required_ruby_version` in `Rakefile` to **~> 3.1**
+
 ## 2025-09-09 v0.1.1
 
 - Updated Ruby version requirement from **~> 3.1** to **~> 3.0** in `Rakefile`
