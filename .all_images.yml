@@ -1,10 +1,12 @@
 dockerfile: |-
   RUN apk add --no-cache build-base yaml-dev git
+  RUN gem update --system
   RUN gem install bundler gem_hadar
 
 script: &script |-
   echo -e "\e[1m"
   ruby -v
+  bundle update
   bundle
   echo -e "\e[0m"
   rake spec
