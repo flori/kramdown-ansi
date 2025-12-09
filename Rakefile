@@ -24,6 +24,10 @@ GemHadar do
 
   executables << 'md' << 'git-md'
 
+  github_workflows(
+    'static.yml' => {}
+  )
+
   required_ruby_version  '~> 3.1'
 
   dependency             'term-ansicolor',        '~> 1.11'
