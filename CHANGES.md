@@ -1,5 +1,37 @@
 # Changes
 
+## 2025-12-09 v0.3.0
+
+- Added documentation link to README
+- Added GitHub Actions workflow file `.github/workflows/static.yml` for static
+  site deployment to GitHub Pages
+- Configured GitHub Actions workflow to run on `master` branch pushes and
+  manual dispatch with appropriate permissions
+- Implemented deployment job using `ubuntu-latest` runner with steps for
+  checkout, setup Pages, setup Ruby **3.4**, documentation generation, artifact
+  upload, and deployment
+- Updated `Rakefile` to include `github_workflows` configuration for the new
+  `static.yml` workflow
+- Updated gem dependencies in `kramdown-ansi.gemspec` to use RubyGems version
+  **3.7.2** instead of **3.6.9**
+- Updated `gem_hadar` development dependency from version **~> 2.6** to **~>
+  2.8**
+- Modified `lib/kramdown/ansi/pager.rb` to improve documentation and yield both
+  output stream and process ID to the block
+- Added new test case in `spec/kramdown/ansi/pager_spec.rb` to verify that the
+  `pager` method yields both output and pid to the block
+- Enhanced the `pager` method documentation to better describe its
+  functionality and parameters
+- Added `bundle install --jobs=$(getconf _NPROCESSORS_ONLN)` command to utilize
+  all available CPU cores during gem installation
+- Updated `gem_hadar` development dependency from version **2.2** to **2.6**
+- Modified `package_ignore` in `Rakefile` to explicitly ignore `.github`
+  directory instead of using glob pattern `'.github/**/*'`
+- Added `RUN gem update --system` to update RubyGems to **latest** version in
+  CI configuration
+- Added `bundle update` command to update bundle dependencies in CI
+  configuration
+
 ## 2025-09-09 v0.2.0
 
 - Updated required Ruby version requirement from **~> 3.0** to **~> 3.1**
