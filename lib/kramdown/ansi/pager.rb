@@ -18,21 +18,25 @@ require 'term/ansicolor'
 module Kramdown::ANSI::Pager
   module_function
 
-  # If called without a block returns either the provided command for paging if
-  # the given number of lines are exceeding the available number of terminal
-  # lines or nil. If a block was provided it yields to an IO handle for the
-  # pager command in the latter case or STDOUT in the former.
+  # The pager method manages terminal output paging functionality
   #
-  # @param command [String] the pager command (optional)
-  # @param lines [Integer] the number of lines in the output (optional)
-  # @yield [IO] yields the output IO handle for further processing
-  # @return [NilClass] returns nil if STDOUT is used or STDOUT is not a TTY.
+  # This method handles the logic for determining when to use a pager command
+  # like 'less' or 'more' when the output exceeds the terminal's line capacity.
+  # It also manages the execution of these pagers and ensures proper terminal
+  # state restoration when paging is used.
+  #
+  # @param command [String] the pager command to use when paging is needed
+  # @param lines [Integer] the number of lines to compare against terminal height
+  # @yield [output, pid] when a block is provided, yields the output stream and child's process ID
+  # @yieldparam output [IO] the IO stream to write output to
+  # @yieldparam pid [Integer] the process ID of the pager subprocess
+  # @return [String, nil] the pager command string if paging was used, nil otherwise
   def pager(command: nil, lines: nil, &block)
     if block
       if my_pager = pager(command:, lines:)
         IO.popen(my_pager, 'w') do |output|
           output.sync = true
-          yield output
+          yield output, output.pid
         rescue Interrupt, Errno::EPIPE
           pager_reset_screen
           return nil

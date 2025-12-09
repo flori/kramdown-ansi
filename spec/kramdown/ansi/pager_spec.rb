@@ -47,6 +47,19 @@ describe Kramdown::ANSI::Pager do
         expect(result).to eq command
       end
 
+      it 'yields to output and pid' do
+        expect(Tins::Terminal).to receive(:lines).and_return 25
+        child_pid = nil
+        result = Kramdown::ANSI::Pager.pager(command: command, lines: 30) do |output, pid|
+          expect(pid).to be_a Integer
+          expect(output).to be_a IO
+          expect(output).not_to eq STDOUT
+          child_pid    = pid
+        end
+        expect(child_pid).to be_a Integer
+        expect(result).to eq command
+      end
+
       it 'closes output for Interrupt' do
         expect(Tins::Terminal).to receive(:lines).and_return 25
         block_called = false
