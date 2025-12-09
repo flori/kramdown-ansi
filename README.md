@@ -5,6 +5,10 @@
 **Kramdown::ANSI**: A library for rendering Markdown(ish) documents with beautiful
 ANSI escape sequences _in the terminal_.
 
+## Documentation
+
+Complete API documentation is available at: [GitHub.io](https://flori.github.io/kramdown-ansi/)
+
 ## Installation (gem &amp; bundler)
 
 To install Kramdown::ANSI, you can use the following methods:
