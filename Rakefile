@@ -28,7 +28,7 @@ GemHadar do
     'static.yml' => {}
   )
 
-  required_ruby_version  '~> 3.1'
+  required_ruby_version  '>= 3.1'
 
   dependency             'term-ansicolor',        '~> 1.11'
   dependency             'kramdown-parser-gfm',   '~> 1.1'

@@ -17,14 +17,14 @@ Gem::Specification.new do |s|
   s.homepage = "https://github.com/flori/kramdown-ansi".freeze
   s.licenses = ["MIT".freeze]
   s.rdoc_options = ["--title".freeze, "Kramdown-ansi - Output markdown in the terminal with ANSI escape sequences".freeze, "--main".freeze, "README.md".freeze]
-  s.required_ruby_version = Gem::Requirement.new("~> 3.1".freeze)
-  s.rubygems_version = "3.7.2".freeze
+  s.required_ruby_version = Gem::Requirement.new(">= 3.1".freeze)
+  s.rubygems_version = "4.0.2".freeze
   s.summary = "Output markdown in the terminal with ANSI escape sequences".freeze
   s.test_files = ["spec/kramdown/ansi/pager_spec.rb".freeze, "spec/kramdown/ansi/styles_spec.rb".freeze, "spec/kramdown/ansi/width_spec.rb".freeze, "spec/kramdown/ansi_spec.rb".freeze, "spec/spec_helper.rb".freeze]
 
   s.specification_version = 4
 
-  s.add_development_dependency(%q<gem_hadar>.freeze, ["~> 2.8".freeze])
+  s.add_development_dependency(%q<gem_hadar>.freeze, ["~> 2.9".freeze])
   s.add_development_dependency(%q<all_images>.freeze, ["~> 0.4".freeze])
   s.add_development_dependency(%q<rspec>.freeze, ["~> 3.2".freeze])
   s.add_development_dependency(%q<debug>.freeze, [">= 0".freeze])
