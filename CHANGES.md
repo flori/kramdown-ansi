@@ -1,5 +1,14 @@
 # Changes
 
+## 2025-12-19 v0.4.0
+
+- Changed `required_ruby_version` from `~> 3.1` to `>= 3.1` in `Rakefile` and `kramdown-ansi.gemspec`
+- Updated `rubygems_version` from **3.7.2** to **4.0.2** in `kramdown-ansi.gemspec`
+- Updated `gem_hadar` development dependency from **2.8** to **2.9** in `kramdown-ansi.gemspec`
+- Added `openssl-dev` to the `RUN apk add` command in `.all_images.yml`
+- Changed `bundle update` to `bundle update --all` in `.all_images.yml`
+- Added `ruby:4.0-rc-alpine` image configuration in `.all_images.yml`
+
 ## 2025-12-09 v0.3.0
 
 - Added documentation link to README
