@@ -1,5 +1,21 @@
 # Changes
 
+## 2026-02-23 v0.4.1
+
+- Updated the Ruby CI script to use `bundle exec` when running `rake spec`,
+  ensuring the correct gem execution context.
+- Removed a duplicate `echo -e "\e[0m"` line from the CI script for cleaner
+  output.
+- Adjusted the CI configuration to maintain compatibility with the **4.0**
+  Alpine image.
+- Added a `CHANGES.md` file to the gem release process.
+- Configured the `GemHadar` block in the `Rakefile` to include `CHANGES.md` in
+  gem releases, ensuring release notes are published to RubyGems.org.
+- Updated the Ruby base image from `ruby:4.0-rc-alpine` to `ruby:4.0-alpine`
+  for stable builds.
+- Enabled the `ruby:4.0-rc-alpine` image in the build matrix to support
+  release‑candidate testing.
+
 ## 2025-12-19 v0.4.0
 
 - Changed `required_ruby_version` from `~> 3.1` to `>= 3.1` in `Rakefile` and `kramdown-ansi.gemspec`
