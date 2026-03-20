@@ -18,7 +18,7 @@ Gem::Specification.new do |s|
   s.licenses = ["MIT".freeze]
   s.rdoc_options = ["--title".freeze, "Kramdown-ansi - Output markdown in the terminal with ANSI escape sequences".freeze, "--main".freeze, "README.md".freeze]
   s.required_ruby_version = Gem::Requirement.new(">= 3.1".freeze)
-  s.rubygems_version = "4.0.3".freeze
+  s.rubygems_version = "4.0.8".freeze
   s.summary = "Output markdown in the terminal with ANSI escape sequences".freeze
   s.test_files = ["spec/kramdown/ansi/pager_spec.rb".freeze, "spec/kramdown/ansi/styles_spec.rb".freeze, "spec/kramdown/ansi/width_spec.rb".freeze, "spec/kramdown/ansi_spec.rb".freeze, "spec/spec_helper.rb".freeze]
 
