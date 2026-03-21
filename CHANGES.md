@@ -1,5 +1,33 @@
 # Changes
 
+## 2026-03-21 v0.5.0
+
+- Added `spec/kramdown/ansi_table_spec.rb` to the test suite and gemspec file
+  list.
+- Updated `Kramdown::ANSI#convert_tr` to use column‑width ratios instead of a
+  fixed `full_width`.
+- Refactored `Kramdown::ANSI::Width.wrap` to preserve ANSI escapes, clamp
+  lengths, and use a token‑based wrapping algorithm.
+- Introduced `display_width` method in `Kramdown::ANSI::Width` to compute
+  visual width after stripping ANSI codes.
+- Extracted ANSI escape removal logic into reusable
+  `Kramdown::ANSI::Width.remove_ansi_escapes`.
+- Added lightweight `LoremIpsum` helper class in `spec/spec_helper.rb` for
+  deterministic dummy text.
+- Updated `spec/kramdown/ansi_spec.rb` expectations to reflect new line‑break
+  behavior and added a direct `output.puts` call.
+- Updated CI image configuration: install `build-base`, `yaml-dev`,
+  `openssl-dev`, `git`; removed `bundle update`; added before/after blocks;
+  removed `Gemfile.lock`.
+- Added `.rspec` configuration with `--force-color` and exclusion of
+  `spec_helper`.
+- Added `.utilsrc` configuration for util indexing, listing numerous gems and
+  test framework settings.
+- Removed `require 'spec_helper'` from spec files, enabling colorized test
+  output.
+- Added runtime dependency on `unicode-display_width` (~> **3.0**) for accurate
+  string width calculations.
+
 ## 2026-02-23 v0.4.1
 
 - Updated the Ruby CI script to use `bundle exec` when running `rake spec`,
