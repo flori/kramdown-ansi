@@ -35,6 +35,15 @@ module Kramdown::ANSI::Width
     line.to_s.gsub(/\e\[.*?m|\e\].*?(\e|\a)\\?/, '')
   end
 
+  # Calculates the display width of a string after removing ANSI escape
+  # sequences.
+  #
+  # @param line [String] the string to measure
+  # @return [Integer] the number of columns the string occupies in a terminal
+  def display_width(line)
+    Unicode::DisplayWidth.of(remove_ansi_escapes(line))
+  end
+
   # Wraps text to a specified width.
   #
   # @param text [String] the text to wrap
@@ -47,7 +56,7 @@ module Kramdown::ANSI::Width
       raise ArgumentError, "either pass percentage or length argument"
     percentage and length ||= width(percentage:)
     text.gsub(/(?<!\n)\n(?!\n)/, ' ').lines.map do |line|
-      if length >= 1 && uncolor { line }.length > length
+      if length >= 1 && display_width(line) > length
         line.gsub(/(.{1,#{length}})(\s+|$)/, "\\1\n").strip
       else
         line.strip
