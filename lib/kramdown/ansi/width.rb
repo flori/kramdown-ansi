@@ -46,10 +46,31 @@ module Kramdown::ANSI::Width
 
   # Wraps text to a specified width.
   #
+  # The method accepts either a *percentage* of the terminal width or an
+  # explicit *length* in columns.  If *percentage* is supplied, the
+  # terminal's current column count is queried via `Tins::Terminal.columns`
+  # and converted to an integer width.  The method will raise an
+  # `ArgumentError` if both arguments are omitted or both are supplied.
+  #
+  # Newline handling:
+  #   * Consecutive line breaks (`\n\n`) are preserved as paragraph
+  #     separators.
+  #   * Single line breaks that are not part of a paragraph are replaced
+  #     with a space before wrapping.
+  #
+  # Wrapping algorithm:
+  #   * Each logical line is processed independently.
+  #   * If the line's display width exceeds the target length, it is
+  #     split on word boundaries (or at the specified length if no
+  #     whitespace is available).  The split points are followed by a
+  #     newline.
+  #   * Trailing whitespace on each line is stripped.
+  #
   # @param text [String] the text to wrap
   # @option percentage [Numeric] the percentage value for the width (defaults to nil)
   # @option length [Integer] the character length for the width (defaults to nil)
-  # @return [String] the wrapped text
+  # @return [String] the wrapped text, with paragraphs separated by a single
+  #   newline and lines broken at the specified width.
   # @raise [ArgumentError] if neither `percentage` nor `length` is provided
   def wrap(text, percentage: nil, length: nil)
     percentage.nil? ^ length.nil? or
