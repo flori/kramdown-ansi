@@ -55,6 +55,7 @@ module Kramdown::ANSI::Width
     percentage.nil? ^ length.nil? or
       raise ArgumentError, "either pass percentage or length argument"
     percentage and length ||= width(percentage:)
+    length = length.to_i
     text.gsub(/(?<!\n)\n(?!\n)/, ' ').lines.map do |line|
       if length >= 1 && display_width(line) > length
         line.gsub(/(.{1,#{length}})(\s+|$)/, "\\1\n").strip
