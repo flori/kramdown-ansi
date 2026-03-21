@@ -1,6 +1,3 @@
-require 'spec_helper'
-
-
 describe Kramdown::ANSI::Styles do
   describe '.from_json' do
     it 'configures styles from JSON' do

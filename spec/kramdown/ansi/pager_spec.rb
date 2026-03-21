@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 describe Kramdown::ANSI::Pager do
   let :command do
     'cat'

@@ -1,6 +1,3 @@
-require 'spec_helper'
-require 'pathname'
-
 describe Kramdown::ANSI do
   let :source  do
     File.read(Pathname.new(__dir__) + '..' + '..' + 'README.md')
