@@ -27,6 +27,14 @@ module Kramdown::ANSI::Width
     ((Float(percentage) * Tins::Terminal.columns) / 100).floor
   end
 
+  # Removes ANSI escape sequences from the given string.
+  #
+  # @param line [String] the string potentially containing ANSI escape codes.
+  # @return [String] the string with all ANSI escape sequences removed.
+  def remove_ansi_escapes(line)
+    line.to_s.gsub(/\e\[.*?m|\e\].*?(\e|\a)\\?/, '')
+  end
+
   # Wraps text to a specified width.
   #
   # @param text [String] the text to wrap

@@ -56,7 +56,7 @@ class Kramdown::ANSI < Kramdown::Converter::Base
     # @return [String] a copy of the input string with all ANSI escape
     # sequences removed
     def self.ansi_escape(line)
-      line.to_s.gsub(/\e\[.*?m|\e\].*?(\e|\a)\\?/, '')
+      Kramdown::ANSI::Width.remove_ansi_escapes(line)
     end
   end
 
