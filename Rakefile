@@ -38,6 +38,7 @@ GemHadar do
   dependency             'kramdown-parser-gfm',   '~> 1.1'
   dependency             'terminal-table',        '~> 4.0'
   dependency             'json',                  '~> 2.0'
+  dependency             'unicode-display_width', '~> 3.0'
   development_dependency 'all_images',            '~> 0.4'
   development_dependency 'rspec',                 '~> 3.2'
   development_dependency 'debug'
