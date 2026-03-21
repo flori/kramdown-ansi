@@ -44,46 +44,51 @@ module Kramdown::ANSI::Width
     Unicode::DisplayWidth.of(remove_ansi_escapes(line))
   end
 
-  # Wraps text to a specified width.
-  #
-  # The method accepts either a *percentage* of the terminal width or an
-  # explicit *length* in columns.  If *percentage* is supplied, the
-  # terminal's current column count is queried via `Tins::Terminal.columns`
-  # and converted to an integer width.  The method will raise an
-  # `ArgumentError` if both arguments are omitted or both are supplied.
-  #
-  # Newline handling:
-  #   * Consecutive line breaks (`\n\n`) are preserved as paragraph
-  #     separators.
-  #   * Single line breaks that are not part of a paragraph are replaced
-  #     with a space before wrapping.
-  #
-  # Wrapping algorithm:
-  #   * Each logical line is processed independently.
-  #   * If the line's display width exceeds the target length, it is
-  #     split on word boundaries (or at the specified length if no
-  #     whitespace is available).  The split points are followed by a
-  #     newline.
-  #   * Trailing whitespace on each line is stripped.
+  # Wraps a string to a given width, either by percentage of terminal
+  # width or by an explicit character length.
   #
   # @param text [String] the text to wrap
-  # @option percentage [Numeric] the percentage value for the width (defaults to nil)
-  # @option length [Integer] the character length for the width (defaults to nil)
-  # @return [String] the wrapped text, with paragraphs separated by a single
-  #   newline and lines broken at the specified width.
+  # @option percentage [Numeric] the percentage of terminal width to use
+  # @option length [Integer] the explicit character width to wrap to
+  # @return [String] the wrapped string, preserving ANSI escape sequences
   # @raise [ArgumentError] if neither `percentage` nor `length` is provided
+  # @example
+  #   Kramdown::ANSI::Width.wrap("Hello world!", percentage: 50)
+  #   # => "Hello\nworld!"
   def wrap(text, percentage: nil, length: nil)
     percentage.nil? ^ length.nil? or
       raise ArgumentError, "either pass percentage or length argument"
     percentage and length ||= width(percentage:)
-    length = length.to_i
-    text.gsub(/(?<!\n)\n(?!\n)/, ' ').lines.map do |line|
-      if length >= 1 && display_width(line) > length
-        line.gsub(/(.{1,#{length}})(\s+|$)/, "\\1\n").strip
+    return text if length <= 0
+    begin
+      length = length.to_i
+    rescue FloatDomainError
+      return text
+    end
+    length = length.clamp(1..)
+    length_without_ansi = 0
+    result = ''
+    text.gsub(/(?<nws>\S+)|(?<ws>\s)/) do
+      token_value  = $&
+      token_length = display_width(token_value)
+      if $~[:nws]
+        if length_without_ansi + token_length > length
+          length_without_ansi = token_length
+          if result[-1] == ' '
+            result[-1, 1] = "\n#{token_value}"
+          else
+            result << "\n#{token_value}"
+          end
+        else
+          length_without_ansi += token_length
+          result << token_value
+        end
       else
-        line.strip
+        length_without_ansi += token_length
+        result << token_value
       end
-    end * ?\n
+    end
+    result
   end
 
   # Truncates a given string to a specified length or percentage. If the text

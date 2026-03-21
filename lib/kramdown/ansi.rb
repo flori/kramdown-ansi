@@ -457,14 +457,14 @@ class Kramdown::ANSI < Kramdown::Converter::Base
   # addition of the row to the table instance
   def convert_tr(el, opts)
     return '' if el.children.empty?
-    full_width = width(percentage: 90)
     cols = el.children.map { |c| convert(c, opts).strip }
-    row_size = cols.sum(&:size)
-    return '' if row_size.zero?
-    opts[:table] << cols.map { |c|
-      length = (full_width * (c.size / row_size.to_f)).floor
-      wrap(c, length:)
-    }
+    return '' if cols.empty?
+    col_widths        = cols.map { |c| display_width(c).size }
+    col_widths_sum = col_widths.sum
+    full_width = width(percentage: 90)
+    ratios = cols.each_with_index.map { |c, i| col_widths[i] / col_widths_sum.to_f }
+    wrapped_cols = cols.zip(ratios).map { |c, r| wrap(c, length: r * full_width) }
+    opts[:table] << wrapped_cols
     ''
   end
 

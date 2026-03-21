@@ -8,7 +8,7 @@ describe Kramdown::ANSI do
       ansi = described_class.parse(source)
       expect(ansi).to include("\e[1m\e[4mDescription\e[0m\e[0m")
       expect(ansi).to include("\e[1mKramdown::ANSI\e[0m")
-      expect(ansi).to include("\e[3min the terminal\e[0m")
+      expect(ansi).to include("\e[3min the\nterminal\e[0m") # wrap adds linebreak
       expect(ansi).to include("\e[34mgem install kramdown-ansi\n\e[0m")
       expect(ansi).to include("\e[34mbundle install\e[0m")
       expect(ansi).to include("This is the end.")
@@ -27,10 +27,11 @@ describe Kramdown::ANSI do
       ansi = described_class.parse(source, ansi_styles:)
       expect(ansi).to include("\e[31m\e[4mDescription\e[0m\e[0")
       expect(ansi).to include("\e[32mKramdown::ANSI\e[0m")
-      expect(ansi).to include("\e[33min the terminal\e[0m")
+      expect(ansi).to include("\e[33min the\nterminal\e[0m") # wrap adds linebreak
       expect(ansi).to include("\e[1m\e[38;5;208mgem install kramdown-ansi\n\e[0m\e[0m")
       expect(ansi).to include("\e[1m\e[38;5;208mbundle install\e[0m\e[0m")
       expect(ansi).to include("This is the end.")
+      output.puts ansi
     end
   end
 end
