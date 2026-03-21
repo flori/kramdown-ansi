@@ -54,7 +54,6 @@ code_indexer do
     kramdown-ansi
     kramdown-parser-gfm
     logger
-    mini_portile2
     mize
     more_math
     net-http
