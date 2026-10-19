@@ -41,7 +41,6 @@ code_indexer do
     date
     debug
     diff-lcs
-    docile
     erb
     excon
     fileutils
@@ -79,8 +78,6 @@ code_indexer do
     search_ui
     shellwords
     simplecov
-    simplecov-html
-    simplecov_json_formatter
     stringio
     sync
     term-ansicolor
