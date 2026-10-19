@@ -6,6 +6,7 @@ script: &script |-
   ruby -v
   echo -e "\e[0m"
   bundle install --jobs=$(nproc)
+  git config --global --add safe.directory /work
   bundle exec rake spec
 
 before: |-
