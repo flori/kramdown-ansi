@@ -95,14 +95,25 @@ module Kramdown::ANSI::Width
     result
   end
 
-  # A frozen data record for a single token in the `truncate` scan.
-  #
-  # +type+ is `:esc` (ANSI escape, zero display width) or
-  # `:txt` (visible character, display width from
-  # `Unicode::DisplayWidth`).
-  # +value+ is the raw matched substring.
-  # +length+ is the display width in terminal columns (0 for escapes).
-  Token = Data.define(:type, :value, :length)
+  if defined?(Data)
+    # A frozen data record for a single token in the `truncate` scan.
+    #
+    # +type+ is `:esc` (ANSI escape, zero display width) or
+    # `:txt` (visible character, display width from
+    # `Unicode::DisplayWidth`).
+    # +value+ is the raw matched substring.
+    # +length+ is the display width in terminal columns (0 for escapes).
+    Token = Data.define(:type, :value, :length)
+  else
+    class Token < Struct.new(:type, :value, :length)
+      def initialize(**opts)
+        opts.each do |key, value|
+          self.send("#{key}=", value)
+        end
+        freeze
+      end
+    end
+  end
 
   private_constant :Token
 
