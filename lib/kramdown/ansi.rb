@@ -436,8 +436,18 @@ class Kramdown::ANSI < Kramdown::Converter::Base
       apply_style(:em) { inner(el, opts) }
     elsif el.value == 'b' || el.value == 'strong'
       apply_style(:strong) { inner(el, opts) }
-    elsif el.value == 'del' || e.value == 's'
+    elsif el.value == 'ins' || el.value == 'u'
+      apply_style(:ins) { inner(el, opts) }
+    elsif el.value == 'mark'
+      apply_style(:mark) { inner(el, opts) }
+    elsif el.value == 'del' || el.value == 's'
       apply_style(:del) { inner(el, opts) }
+    elsif el.value == 'tt'
+      apply_style(:code) { inner(el, opts) }
+    elsif el.value == 'small'
+      apply_style(:small) { inner(el, opts) }
+    elsif %w[ span sub sup ].include?(el.value)
+      inner(el, opts)
     else
       ''
     end

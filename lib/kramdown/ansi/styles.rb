@@ -30,6 +30,9 @@ class Kramdown::ANSI::Styles
       code:       :blue,
       blockquote: :faint,
       del:        :strikethrough,
+      ins:        :underline,
+      mark:       :negative,
+      small:      :faint,
     }
     @ansi_styles = @default_ansi_styles.dup
   end
