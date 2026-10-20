@@ -282,6 +282,28 @@ class Kramdown::ANSI < Kramdown::Converter::Base
     apply_style(:code) { el.value }
   end
 
+  BLOCKQUOTE_QUOTES = [
+    %w[“ ”],
+    %w[‘ ’],
+    %w[ » « ],
+    %w[ › ‹ ],
+  ].map(&:freeze).freeze
+  private_constant :BLOCKQUOTE_QUOTES
+
+  # Wraps the content of a blockquote level with the corresponding
+  # typographic quotation marks, cycling through a predefined set of
+  # quote pairs based on the nesting depth.
+  #
+  # @param level [ Integer ] the nesting level of the blockquote
+  # @yield [ String ] the inner content to be wrapped in quotation marks
+  # @return [ String ] the content enclosed by the appropriate opening and
+  #   closing quote characters
+  def blockquote_quote(level, &block)
+    quote = BLOCKQUOTE_QUOTES[level % BLOCKQUOTE_QUOTES.size]
+    quote[0] + block.() + quote[1]
+  end
+  private :blockquote_quote
+
   # The convert_blockquote method processes a blockquote element by applying
   # proper formatting.
   #
@@ -295,7 +317,19 @@ class Kramdown::ANSI < Kramdown::Converter::Base
   # @return [String] the formatted blockquote content with quotation marks and
   # proper newlines
   def convert_blockquote(el, opts)
-    newline ?“ + inner(el, opts).sub(/\n+\z/, '') + ?”
+    old_level = opts[:blockquote_level] ||= -1
+    level = opts[:blockquote_level] = old_level + 1
+    if level.zero?
+      newline(
+        blockquote_quote(level) {
+          apply_style(:blockquote) { inner(el, opts).strip }
+        }.gsub(/^/, ' ')
+      )
+    else
+      blockquote_quote(level) { inner(el, opts).strip }.gsub(/^/, ' ')
+    end
+  ensure
+    opts[:blockquote_level] = old_level
   end
 
   # The convert_hr method processes a horizontal rule element by generating a

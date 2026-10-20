@@ -47,10 +47,11 @@ You can customize the ANSI styles by passing an `ansi_styles` option:
 require 'kramdown/ansi'
 
 ansi_styles = {
-  header: [:bold, :magenta],
-  strong: :green,
-  em:     :yellow,
-  code:   [:cyan, :underline]
+  header:     [:bold, :magenta],
+  strong:     :green,
+  em:         :yellow,
+  code:       [:cyan, :underline],
+  blockquote: :blue,
 }
 
 puts Kramdown::ANSI.parse(markdown, ansi_styles:)
@@ -65,7 +66,7 @@ methods:
 require 'kramdown/ansi'
 
 # Using from_json method
-json_config = '{"header": ["bold", "magenta"], "code": ["cyan", "underline"]}'
+json_config = '{"header": ["bold", "magenta"], "code": ["cyan", "underline"], "blockquote": ["magenta", "underline"]}'
 ansi_styles = Kramdown::ANSI::Styles.from_json(json_config)
 
 # Apply to parsing
@@ -176,6 +177,10 @@ The homepage of this library is located at
 ## Mandatory Kitten Image
 
 ![cat](./spec/assets/kitten.jpg)
+
+Dialog:
+> What's that, Fluffy?
+>> That's my new friend.
 
 ---
 

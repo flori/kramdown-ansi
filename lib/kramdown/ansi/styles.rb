@@ -24,10 +24,11 @@ class Kramdown::ANSI::Styles
   # configuration.
   def initialize
     @default_ansi_styles = {
-      header: %i[ bold underline ],
-      strong: :bold,
-      em:     :italic,
-      code:   :blue,
+      header:     %i[ bold underline ],
+      strong:     :bold,
+      em:         :italic,
+      code:       :blue,
+      blockquote: :faint,
     }
     @ansi_styles = @default_ansi_styles.dup
   end
