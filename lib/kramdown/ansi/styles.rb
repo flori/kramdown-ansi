@@ -29,6 +29,7 @@ class Kramdown::ANSI::Styles
       em:         :italic,
       code:       :blue,
       blockquote: :faint,
+      del:        :strikethrough,
     }
     @ansi_styles = @default_ansi_styles.dup
   end

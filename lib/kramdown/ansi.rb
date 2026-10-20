@@ -436,6 +436,8 @@ class Kramdown::ANSI < Kramdown::Converter::Base
       apply_style(:em) { inner(el, opts) }
     elsif el.value == 'b' || el.value == 'strong'
       apply_style(:strong) { inner(el, opts) }
+    elsif el.value == 'del' || e.value == 's'
+      apply_style(:del) { inner(el, opts) }
     else
       ''
     end
