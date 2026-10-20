@@ -91,6 +91,35 @@ class Kramdown::ANSI < Kramdown::Converter::Base
     options = { input: :mygfm, auto_ids: false, entity_output: :as_char }.merge(
       options.transform_keys(&:to_sym)
     )
+    # Insert blank line before GFM pipe tables glued to preceding
+    # content; kramdown requires it to parse the table correctly.
+    #
+    # Matches: a non-table line immediately followed by a table header,
+    # a valid GFM separator row, and at least one body row.
+    # A two-line "table" (header + separator, no body) is not a table
+    # per GFM, so no blank line is inserted.
+    source = source.gsub(
+      /
+      ( [^|\n][^\n]*\n )           # $1: preceding line (not a pipe line)
+      ( \|[^\n]*\n )               # $2: table header (starts with |)
+      ( \|(?:\s*:?-+:?\s*\|)+\n )  # $3: GFM separator + newline
+      ( \|[^\n]* )                 # $4: first body row (starts with |)
+        \n
+      /x,
+      "\\1\n\\2\\3\\4\n"
+    )
+    # Insert blank line after a table's last row when glued to
+    # following content; kramdown requires it to close the table.
+    source = source.gsub(
+      /(\|[^\n]*\n)([^|\n])/,
+    ) do |match|
+      next_char = Regexp.last_match(2)
+      if next_char.match?(/\A\s*:?-+/)
+        match
+      else
+        "#{Regexp.last_match(1)}\n#{next_char}"
+      end
+    end
     @doc = Kramdown::Document.new(source, options).to_ansi
   end
 
@@ -457,13 +486,22 @@ class Kramdown::ANSI < Kramdown::Converter::Base
   # addition of the row to the table instance
   def convert_tr(el, opts)
     return '' if el.children.empty?
-    cols = el.children.map { |c| convert(c, opts).strip }
+    cols = el.children.map do |c|
+      stripped = convert(c, opts).strip
+      stripped.empty? ? ' ' : stripped
+    end
     return '' if cols.empty?
-    col_widths        = cols.map { |c| display_width(c).size }
+    col_widths     = cols.map { |c| display_width(c) }
     col_widths_sum = col_widths.sum
-    full_width = width(percentage: 90)
-    ratios = cols.each_with_index.map { |c, i| col_widths[i] / col_widths_sum.to_f }
-    wrapped_cols = cols.zip(ratios).map { |c, r| wrap(c, length: r * full_width) }
+    full_width     = width(percentage: 90)
+    ratios         = cols.each_with_index.map do |c, i|
+      if col_widths_sum.zero?
+        1.0 / cols.size
+      else
+        col_widths[i] / col_widths_sum.to_f
+      end
+    end
+    wrapped_cols   = cols.zip(ratios).map { |c, r| wrap(c, length: r * full_width) }
     opts[:table] << wrapped_cols
     ''
   end

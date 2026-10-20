@@ -1,0 +1,348 @@
+╭───┬───╮
+│ A │ B │
+├───┼───┤
+│ 1 │ 2 │
+╰───┴───╯
+
+[1m[4mCase 00 — Table at Document Start[0m[0m
+
+[1m[4mCase 01 — Column Count Mismatch[0m[0m
+
+Header has 3 columns, data rows have 5 and 1.
+
+╭──────────┬───┬───┬───┬───╮
+│    A     │ B │ C │   │   │
+├──────────┼───┼───┼───┼───┤
+│    1     │ 2 │ 3 │ 4 │ 5 │
+├──────────┼───┼───┼───┼───┤
+│ only-one │   │   │   │   │
+├──────────┼───┼───┼───┼───┤
+│    a     │ b │ c │ d │   │
+╰──────────┴───┴───┴───┴───╯
+
+[1m[4mCase 02 — No Leading / Trailing Pipes[0m[0m
+
+GFM allows omitting the outer [34m|[0m. Renderer must still split on inner
+pipes.
+
+╭───┬───┬───╮
+│ A │ B │ C │
+├───┼───┼───┤
+│ 1 │ 2 │ 3 │
+├───┼───┼───┤
+│ 4 │ 5 │ 6 │
+╰───┴───┴───╯
+
+[1m[4mCase 03 — Escaped Pipe in Cell[0m[0m
+
+[34m\|[0m should render as a literal [34m|[0m, not split the column.
+
+╭───────────────────────┬───────╮
+│ Col                   │ Value │
+├───────────────────────┼───────┤
+│ [34ma\|b[0m                  │ 1     │
+├───────────────────────┼───────┤
+│ [34mx \| y[0m                │ 2     │
+├───────────────────────┼───────┤
+│ no-escape-but-literal │ pipe  │
+╰───────────────────────┴───────╯
+
+[1m[4mCase 04 — Empty Cells[0m[0m
+
+╭──────┬─────┬───────╮
+│  A   │  B  │   C   │
+├──────┼─────┼───────┤
+│      │     │       │
+├──────┼─────┼───────┤
+│ left │     │ right │
+├──────┼─────┼───────┤
+│      │ mid │       │
+├──────┼─────┼───────┤
+│      │     │       │
+╰──────┴─────┴───────╯
+
+[1m[4mCase 05 — Single-Column Table[0m[0m
+
+╭───────╮
+│ Only  │
+├───────┤
+│ one   │
+├───────┤
+│ two   │
+├───────┤
+│ three │
+╰───────╯
+
+[1m[4mCase 06 — Header + Alignment Only (No Data Rows)[0m[0m
+
+not a table
+
+| X | Y | Z |
+|:-:|:-:|:-:|
+
+[1m[4mCase 07 — Back-to-Back Tables (No Blank Line)[0m[0m
+
+╭─────┬─────╮
+│ T1a │ T1b │
+├─────┼─────┤
+│ a   │ b   │
+╰─────┴─────╯
+
+╭─────┬─────╮
+│ T2a │ T2b │
+├─────┼─────┤
+│ c   │ d   │
+╰─────┴─────╯
+
+[1m[4mCase 08 — Full-Width / Variable-Width Unicode[0m[0m
+
+CJK, emoji (double-width), combining marks — column widths will [3mlie[0m.
+
+╭─────────┬─────────┬──────────────────────────╮
+│ Char    │ Width   │ Note                     │
+├─────────┼─────────┼──────────────────────────┤
+│ [34m你[0m      │ 2 cells │ CJK                      │
+├─────────┼─────────┼──────────────────────────┤
+│ [34m💜[0m      │ 2 cells │ Emoji                    │
+├─────────┼─────────┼──────────────────────────┤
+│ [34me\u0301[0m │ 1+0     │ Combining acute          │
+├─────────┼─────────┼──────────────────────────┤
+│ [34m☝[0m       │ 2 cells │ DBCS symbol              │
+├─────────┼─────────┼──────────────────────────┤
+│ [34m|[0m       │ 1 cell  │ Looks like a pipe, isn't │
+╰─────────┴─────────┴──────────────────────────╯
+
+[1m[4mCase 09 — Markdown [3mInside[0m Cells[0m[0m
+
+Bold, italic, code, links, strikethrough, nested.
+
+╭───────────────────┬─────────╮
+│ Cell              │ Renders │
+├───────────────────┼─────────┤
+│ [34m**bold**[0m          │ [1mbold[0m    │
+├───────────────────┼─────────┤
+│ [34m*it*[0m              │ [3mit[0m      │
+├───────────────────┼─────────┤
+│ [34m`code`[0m            │ [34mcode[0m    │
+├───────────────────┼─────────┤
+│ [34m[link](https://x)[0m │ ]8;;https://x\link]8;;\    │
+├───────────────────┼─────────┤
+│ [34m~~gone~~[0m          │         │
+├───────────────────┼─────────┤
+│ [34m**_both_**[0m        │ [1m[3mboth[0m[0m    │
+╰───────────────────┴─────────╯
+
+[1m[4mCase 10 — Alignment Row Has Wrong Column Count[0m[0m
+
+| A | B | C |
+|:-:|:-:|
+
+[1m[4mCase 11 — Table Split by Blank Line[0m[0m
+
+╭───┬───╮
+│ A │ B │
+├───┼───┤
+│ 1 │ 2 │
+╰───┴───╯
+
+╭───┬───╮
+│ A │ B │
+├───┼───┤
+│ 3 │ 4 │
+╰───┴───╯
+
+[1m[4mCase 12 — Excessive Whitespace Padding[0m[0m
+
+╭───┬───┬───╮
+│ A │ B │ C │
+├───┼───┼───┤
+│ 1 │ 2 │ 3 │
+╰───┴───┴───╯
+
+[1m[4mCase 13 — [34m<br>[0m and HTML in Cells[0m[0m
+
+╭──────┬─────────────────────╮
+│ Cell │ Content             │
+├──────┼─────────────────────┤
+│ br   │ line1line2          │
+├──────┼─────────────────────┤
+│ html │ [34m<span>inline</span>[0m │
+├──────┼─────────────────────┤
+│ both │ [1mbold[0m  [3mitalic[0m        │
+╰──────┴─────────────────────╯
+
+[1m[4mCase 14 — Pipe at Both Ends, Nothing Between[0m[0m
+
+╭───╮
+│   │
+├───┤
+│   │
+╰───╯
+
+[1m[4mCase 15 — One Data Row, 10 Columns[0m[0m
+
+╭───┬───┬───┬───┬───┬───┬───┬───┬───┬────╮
+│ 1 │ 2 │ 3 │ 4 │ 5 │ 6 │ 7 │ 8 │ 9 │ 10 │
+├───┼───┼───┼───┼───┼───┼───┼───┼───┼────┤
+│ a │ b │ c │ d │ e │ f │ g │ h │ i │ j  │
+╰───┴───┴───┴───┴───┴───┴───┴───┴───┴────╯
+
+[1m[4mCase 16 — Alignment Row with Mixed/Invalid Markers[0m[0m
+
+╭───┬───┬───╮
+│ A │ B │ C │
+├───┼───┼───┤
+│ l │ r │ d │
+╰───┴───┴───╯
+
+[1m[4mCase 17 — Table at Document Start, Glued to Following Header[0m[0m
+
+╭───┬───╮
+│ a │ b │
+├───┼───┤
+│ 1 │ 2 │
+╰───┴───╯
+
+[1m[4mnext section[0m[0m
+
+[1m[4mCase 18 — Table Glued to Preceding Header[0m[0m
+
+[1m[4mheading[0m[0m
+
+╭───┬───╮
+│ a │ b │
+├───┼───┤
+│ 1 │ 2 │
+╰───┴───╯
+
+[1m[4mCase 19 — Single Column, No Trailing Pipe on Header[0m[0m
+
+╭─────────╮
+│ a table │
+├─────────┤
+│ hi      │
+╰─────────╯
+
+[1m[4mCase 20 — Not a Table: Single Pipe Line[0m[0m
+
+╭─────────────╮
+│ not a table │
+╰─────────────╯
+
+[1m[4mCase 21 — Not a Table: Header + Sep, No Body, Missing Closing Pipe[0m[0m
+
+|not a table
+|-|
+
+[1m[4mCase 22 — Table After Code Block, Glued[0m[0m
+
+[34msome code
+[0m
+╭───┬───╮
+│ a │ b │
+├───┼───┤
+│ 1 │ 2 │
+╰───┴───╯
+
+[1m[4mCase 23 — Table After List Item, Glued[0m[0m
+
+· item one
+
+· item two
+
+╭───┬───╮
+│ a │ b │
+├───┼───┤
+│ 1 │ 2 │
+╰───┴───╯
+
+[1m[4mCase 24 — No Leading Pipe on Separator[0m[0m
+
+╭───┬───╮
+│ a │ b │
+╰───┴───╯
+
+╭───┬───┬───╮
+│   │ 1 │ 2 │
+╰───┴───┴───╯
+
+[1m[4mCase 25 — No Leading Pipe on Body Row[0m[0m
+
+| a | b |
+|---|---|
+
+╭───┬───╮
+│ 1 │ 2 │
+╰───┴───╯
+
+[1m[4mCase 26 — Indented Table Inside Ordered List[0m[0m
+
+1. [1mFlatten it.[0m
+
+╭─────────┬─────┬───────╮
+│ Service │ Sub │ Value │
+╰─────────┴─────┴───────╯
+
+|:--------|:----|:------|
+
+╭─────────────┬───────────────┬────╮
+│ [34mollama_chat[0m │ [34mkramdown-ansi[0m │ 🟢 │
+╰─────────────┴───────────────┴────╯
+
+────────────────────────────────────────────────────────────────────────────────
+
+╭──────┬────────────────────────────────────────────────────────────────╮
+│ Case │ What It Stresses                                               │
+├──────┼────────────────────────────────────────────────────────────────┤
+│ 01   │ Column count validation / overflow / underflow                 │
+├──────┼────────────────────────────────────────────────────────────────┤
+│ 02   │ Pipe-stripping logic (leading/trailing optional)               │
+├──────┼────────────────────────────────────────────────────────────────┤
+│ 03   │ Escape sequence handling ([34m\|[0m)                                  │
+├──────┼────────────────────────────────────────────────────────────────┤
+│ 04   │ Empty-string cell rendering, border alignment                  │
+├──────┼────────────────────────────────────────────────────────────────┤
+│ 05   │ Single-column edge (degenerate table)                          │
+├──────┼────────────────────────────────────────────────────────────────┤
+│ 06   │ Zero data rows — does it draw a header-only box?               │
+├──────┼────────────────────────────────────────────────────────────────┤
+│ 07   │ Consecutive tables — does the second become data of the first? │
+├──────┼────────────────────────────────────────────────────────────────┤
+│ 08   │ Unicode width calculation for column sizing                    │
+├──────┼────────────────────────────────────────────────────────────────┤
+│ 09   │ Inline markdown rendering [3minside[0m a table cell                  │
+├──────┼────────────────────────────────────────────────────────────────┤
+│ 10   │ Alignment row with fewer columns than header                   │
+├──────┼────────────────────────────────────────────────────────────────┤
+│ 11   │ Blank line splitting one table into two                        │
+├──────┼────────────────────────────────────────────────────────────────┤
+│ 12   │ Whitespace normalization / trimming                            │
+├──────┼────────────────────────────────────────────────────────────────┤
+│ 13   │ Raw HTML + [34m<br>[0m in cell context                                │
+├──────┼────────────────────────────────────────────────────────────────┤
+│ 14   │ Cell with only whitespace — empty or not?                      │
+├──────┼────────────────────────────────────────────────────────────────┤
+│ 15   │ Very wide table — does it wrap or overflow?                    │
+├──────┼────────────────────────────────────────────────────────────────┤
+│ 16   │ Non-standard alignment markers                                 │
+├──────┼────────────────────────────────────────────────────────────────┤
+│ 17   │ Table at doc start, glued to following header                  │
+├──────┼────────────────────────────────────────────────────────────────┤
+│ 18   │ Table glued to preceding header (no blank before)              │
+├──────┼────────────────────────────────────────────────────────────────┤
+│ 19   │ Single col, missing closing pipe on header                     │
+├──────┼────────────────────────────────────────────────────────────────┤
+│ 20   │ Not a table: single pipe line                                  │
+├──────┼────────────────────────────────────────────────────────────────┤
+│ 21   │ Not a table: header + sep, no body, missing pipe               │
+├──────┼────────────────────────────────────────────────────────────────┤
+│ 22   │ Table after code block, no blank between                       │
+├──────┼────────────────────────────────────────────────────────────────┤
+│ 23   │ Table after list item, no blank between                        │
+├──────┼────────────────────────────────────────────────────────────────┤
+│ 24   │ No leading pipe on separator row                               │
+├──────┼────────────────────────────────────────────────────────────────┤
+│ 25   │ No leading pipe on body row                                    │
+├──────┼────────────────────────────────────────────────────────────────┤
+│ 26   │ Indented table inside ordered list item                        │
+╰──────┴────────────────────────────────────────────────────────────────╯

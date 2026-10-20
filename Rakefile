@@ -48,3 +48,19 @@ GemHadar do
 
   clobber 'coverage'
 end
+
+namespace :capture do
+  desc 'Capture golden file output for spec/assets/tables.md'
+  task :tables do
+    require 'kramdown/ansi'
+    module Tins::Terminal
+      def self.columns
+        80
+      end
+    end
+    src = File.read('spec/assets/tables.md')
+    out = Kramdown::ANSI.parse(src)
+    File.write('spec/assets/tables.ansi', out)
+    puts "Captured spec/assets/tables.ansi (#{out.bytesize} bytes)"
+  end
+end
