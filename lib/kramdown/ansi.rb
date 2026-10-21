@@ -113,11 +113,11 @@ class Kramdown::ANSI < Kramdown::Converter::Base
     source = source.gsub(
       /(\|[^\n]*\n)([^|\n])/,
     ) do |match|
-      next_char = Regexp.last_match(2)
+      row, next_char = $1, $2
       if next_char.match?(/\A\s*:?-+/)
         match
       else
-        "#{Regexp.last_match(1)}\n#{next_char}"
+        "#{row}\n#{next_char}"
       end
     end
     @doc = Kramdown::Document.new(source, options).to_ansi
