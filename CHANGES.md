@@ -1,5 +1,73 @@
 # Changes
 
+## 2026-10-21 v0.6.0
+
+### Features
+
+- Add support for nested blockquotes with cycling typographic quotation marks
+  based on nesting depth.
+- Add ANSI styling support for HTML elements: `ins`/`u` (underline), `mark`
+  (negative/inverse), `tt` (code), `small` (faint), and passthrough for
+  `span`/`sub`/`sup`.
+- Add strikethrough support for `del` and `s` HTML elements.
+- Introduce `ProtectEnvVars` module in test helper to isolate environment
+  variable changes during tests tagged with `:protect_env`.
+
+### Fixes
+
+- Fix GFM table parsing by inserting required blank lines before and after pipe
+  tables to ensure correct recognition by `kramdown`.
+- Fix `Integer#size` regression in table column width calculation by using
+  `display_width` directly instead of `.size`, ensuring correct column ratios
+  on Ruby 4.
+- Fix empty table cell rendering by replacing empty strings with a single space
+  and falling back to equal-width splits when total width is zero.
+- Fix typo in `convert_html_element` where `e.value` was used instead of
+  `el.value` for the `del`/`s` branch.
+- Make `Token` definition in `Kramdown::ANSI::Width` compatible with Ruby
+  versions lacking `Data` by providing a `Struct`-based fallback.
+
+### Improvements
+
+- Rewrite `Kramdown::ANSI::Width#truncate` to be ANSI-aware, correctly handling
+  escape sequences, wide characters (emojis), and zero-width characters using
+  `display_width`.
+- Optimize `wrap` and `truncate` methods by using `scan` instead of `gsub` to
+  reduce allocation.
+- Generalize the `capture:tables` Rake task to `capture:ansi` to regenerate
+  golden files for all `spec/assets/*.md` fixtures.
+- Update `README.md` style examples to include `blockquote` and add a nested
+  dialog example.
+
+### Build & CI
+
+- Add `tins` gem (`~> 1.61`) as a runtime dependency.
+- Upgrade `gem_hadar` development dependency to `>= 2.20.1`.
+- Update `rubygems_version` in gemspec to **4.0.22**.
+- Remove unused gems (`docile`, `simplecov-html`, `simplecov_json_formatter`)
+  from `.utilsrc`.
+- Add `git config --global --add safe.directory /work` to Docker test script.
+- Use `nproc` instead of `getconf _NPROCESSORS_ONLN` for CPU count in Docker
+  test script.
+- Add `tmp/.gitkeep` to track the empty `tmp` directory.
+
+### Testing
+
+- Add `spec/kramdown/render_spec.rb` to test `Kramdown::ANSI.parse` for
+  headers, inline emphasis, code blocks, blockquotes, horizontal rules, lists,
+  links, images, and paragraphs.
+- Add `spec/assets/tables.md` and `spec/assets/tables.ansi` golden files
+  covering 26 edge cases for table rendering.
+- Add `spec/kramdown/ansi_golden_spec.rb` for output regression testing against
+  golden files.
+- Add `spec/assets/html.md` and `spec/assets/html.ansi` golden files covering
+  HTML element styling.
+- Add 9 new specs for `Kramdown::ANSI::Width#truncate` covering wide emojis,
+  empty strings, pure ANSI, zero-width characters, newline preservation,
+  multi-cell ellipsis, nested-style reset, and post-cut escape omission.
+- Stub `Tins::Terminal.columns` to 80 in `ansi_spec.rb` and `render_spec.rb`
+  for deterministic output.
+
 ## 2026-03-21 v0.5.0
 
 - Added `spec/kramdown/ansi_table_spec.rb` to the test suite and gemspec file
