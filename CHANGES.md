@@ -1,5 +1,31 @@
 # Changes
 
+## 2026-10-22 v0.7.0
+
+### Fixes
+
+- Fixed GFM table parsing for non-header tables by rendering `:table` elements
+  without a `:thead` as plain text, as GFM requires a header row and delimiter
+  row for a valid table.
+- Corrected table continuation detection in `self.parse` by checking if the
+  next line contains a `|`, resolving issues where delimiter or body rows
+  lacked a leading pipe (e.g., `:---|---:`, `1 | 2`).
+
+### Improvements
+
+- Replaced `Regexp.last_match` calls with direct captured group assignments
+  (`$1`, `$2`) in `ansi.rb` for clarity.
+
+### Build & CI
+
+- Added `scripts/capture-ansi` and `.envrc` for local golden file regeneration.
+- Added `.envrc` and `scripts/*` to `package_ignore` in `Rakefile`.
+
+### Testing
+
+- Added Case 27 (pipe in a sentence) to `spec/assets/tables.md` and regenerated
+  `spec/assets/tables.ansi`.
+
 ## 2026-10-21 v0.6.0
 
 ### Features
