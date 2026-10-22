@@ -204,6 +204,10 @@ some code
    |:--------|:----|:------|
    | `ollama_chat` | `kramdown-ansi` | 🟢 |
 
+## Case 27 — Not a table just a pipe in a sentence
+
+a | b
+
 ---
 
 | Case | What It Stresses |
@@ -234,3 +238,4 @@ some code
 | 24 | No leading pipe on separator row |
 | 25 | No leading pipe on body row |
 | 26 | Indented table inside ordered list item |
+| 27 | Not a table just a pipe in a sentence |

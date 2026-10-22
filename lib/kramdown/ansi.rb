@@ -110,15 +110,14 @@ class Kramdown::ANSI < Kramdown::Converter::Base
     )
     # Insert blank line after a table's last row when glued to
     # following content; kramdown requires it to close the table.
+    #
+    # A following line that contains a pipe is likely a table row
+    # (separator or body), so we keep it glued.
     source = source.gsub(
-      /(\|[^\n]*\n)([^|\n])/,
+      /(\|[^\n]*\n)([^|\n][^\n]*)/
     ) do |match|
-      row, next_char = $1, $2
-      if next_char.match?(/\A\s*:?-+/)
-        match
-      else
-        "#{row}\n#{next_char}"
-      end
+      row, next_line = $1, $2
+      next_line.include?('|') ? match : "#{row}\n#{next_line}"
     end
     @doc = Kramdown::Document.new(source, options).to_ansi
   end
@@ -461,6 +460,18 @@ class Kramdown::ANSI < Kramdown::Converter::Base
   # @param opts [Hash] conversion options containing context for processing
   # @return [String] the formatted table content with proper styling and newlines
   def convert_table(el, opts)
+    # Kramdown's base parser is more permissive than GFM: it accepts
+    # any pipe-delimited line as a table row, even without a header.
+    # GFM mandates a header + separator row minimum, so a :table
+    # element without :thead is just pipe-separated prose.
+    unless el.children.any? { |c| c.type == :thead }
+      rows = el.children.select { |c| c.type == :tbody }.flat_map do |tbody|
+        tbody.children.map do |row|
+          row.children.map { |cell| convert(cell, opts).strip }.join(' | ')
+        end
+      end
+      return newline rows.join("\n")
+    end
     table = Terminal::Table.new
     table.style = {
       all_separators: true,

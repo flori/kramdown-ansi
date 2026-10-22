@@ -225,9 +225,7 @@ Bold, italic, code, links, strikethrough, nested.
 
 [1m[4mCase 20 — Not a Table: Single Pipe Line[0m[0m
 
-╭─────────────╮
-│ not a table │
-╰─────────────╯
+not a table
 
 [1m[4mCase 21 — Not a Table: Header + Sep, No Body, Missing Closing Pipe[0m[0m
 
@@ -260,18 +258,15 @@ Bold, italic, code, links, strikethrough, nested.
 
 ╭───┬───╮
 │ a │ b │
+├───┼───┤
+│ 1 │ 2 │
 ╰───┴───╯
-
-╭───┬───┬───╮
-│   │ 1 │ 2 │
-╰───┴───┴───╯
 
 [1m[4mCase 25 — No Leading Pipe on Body Row[0m[0m
 
-| a | b |
-|---|---|
-
 ╭───┬───╮
+│ a │ b │
+├───┼───┤
 │ 1 │ 2 │
 ╰───┴───╯
 
@@ -279,15 +274,15 @@ Bold, italic, code, links, strikethrough, nested.
 
 1. [1mFlatten it.[0m
 
-╭─────────┬─────┬───────╮
-│ Service │ Sub │ Value │
-╰─────────┴─────┴───────╯
+╭─────────────┬───────────────┬───────╮
+│ Service     │ Sub           │ Value │
+├─────────────┼───────────────┼───────┤
+│ [34mollama_chat[0m │ [34mkramdown-ansi[0m │ 🟢    │
+╰─────────────┴───────────────┴───────╯
 
-|:--------|:----|:------|
+[1m[4mCase 27 — Not a table just a pipe in a sentence[0m[0m
 
-╭─────────────┬───────────────┬────╮
-│ [34mollama_chat[0m │ [34mkramdown-ansi[0m │ 🟢 │
-╰─────────────┴───────────────┴────╯
+a | b
 
 ────────────────────────────────────────────────────────────────────────────────
 
@@ -345,4 +340,6 @@ Bold, italic, code, links, strikethrough, nested.
 │ 25   │ No leading pipe on body row                                    │
 ├──────┼────────────────────────────────────────────────────────────────┤
 │ 26   │ Indented table inside ordered list item                        │
+├──────┼────────────────────────────────────────────────────────────────┤
+│ 27   │ Not a table just a pipe in a sentence                          │
 ╰──────┴────────────────────────────────────────────────────────────────╯
