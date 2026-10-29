@@ -472,6 +472,29 @@ class Kramdown::ANSI < Kramdown::Converter::Base
       end
       return newline rows.join("\n")
     end
+    # Compute per-column budgets from the widest cell in each column
+    # across all rows. Terminal::Table sizes each column to its widest
+    # cell, so per-row ratios would produce columns wider than the
+    # terminal budget.
+    max_w = Hash.new(0)
+    el.children.each do |section|
+      next unless %i[thead tbody tfoot].include?(section.type)
+      section.children.each do |row|
+        row.children.each_with_index do |cell, i|
+          max_w[i] = [max_w[i], display_width(convert(cell, opts).strip)].max
+        end
+      end
+    end
+    n      = max_w.keys.map(&:to_i).max.to_i + 1
+    total  = max_w.values.sum
+    budget = width(percentage: 90) - (3 * n + 1)
+    col_w  = if total.zero?
+               same = (budget.to_f / n).to_i
+               Array.new(n, same)
+             else
+               (0...n).map { |i| ((max_w[i].to_f / total) * budget).to_i }
+             end
+    opts[:table_col_widths] = col_w
     table = Terminal::Table.new
     table.style = {
       all_separators: true,
@@ -533,33 +556,23 @@ class Kramdown::ANSI < Kramdown::Converter::Base
     ''
   end
 
-  # The convert_tr method processes a table row element by calculating column
-  # widths based on content size, wrapping text to fit within the terminal
-  # width, and adding the formatted row to the terminal table instance.
+  # The convert_tr method processes a table row element by wrapping each cell
+  # to the pre-computed column width and adding the formatted row to the
+  # terminal table instance.
   #
   # @param el [Kramdown::Element] the table row element to convert
   # @param opts [Hash] conversion options containing context for processing
+  #   (must include :table and :table_col_widths)
   # @return [String] an empty string to indicate successful processing and
   # addition of the row to the table instance
   def convert_tr(el, opts)
     return '' if el.children.empty?
-    cols = el.children.map do |c|
+    col_w = opts[:table_col_widths]
+    cols  = el.children.each_with_index.map do |c, i|
       stripped = convert(c, opts).strip
-      stripped.empty? ? ' ' : stripped
+      stripped.empty? ? ' ' : wrap(stripped, length: col_w[i])
     end
-    return '' if cols.empty?
-    col_widths     = cols.map { |c| display_width(c) }
-    col_widths_sum = col_widths.sum
-    full_width     = width(percentage: 90) - (3 * cols.size + 1)
-    ratios         = cols.each_with_index.map do |c, i|
-      if col_widths_sum.zero?
-        1.0 / cols.size
-      else
-        col_widths[i] / col_widths_sum.to_f
-      end
-    end
-    wrapped_cols   = cols.zip(ratios).map { |c, r| wrap(c, length: r * full_width) }
-    opts[:table] << wrapped_cols
+    opts[:table] << cols
     ''
   end
 
@@ -662,5 +675,4 @@ class Kramdown::ANSI < Kramdown::Converter::Base
     @ansi_styles.apply(name, &block)
   end
 end
-
 Kramdown::Converter.const_set(:Ansi, Kramdown::ANSI)

@@ -78,7 +78,9 @@ module Kramdown::ANSI::Width
       if $~[:nws]
         if length_without_ansi + token_length > length
           length_without_ansi = token_length
-          if result[-1] == ' '
+          if result.empty?
+            result = token_value
+          elsif result[-1] == ' '
             result[-1, 1] = "\n#{token_value}"
           else
             result << "\n#{token_value}"
