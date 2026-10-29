@@ -1,5 +1,25 @@
 # Changes
 
+## 2026-10-29 v0.9.0
+
+### Features
+
+- Added `reflow:` keyword argument to `Kramdown::ANSI::Width.wrap`. When set to
+  `false`, each line is wrapped independently, preserving original line breaks.
+  When set to `true` (the default), newlines are treated as whitespace and the
+  text is re-flowed as a single paragraph.
+
+### Testing
+
+- Added specs in `spec/kramdown/ansi/width_spec.rb` covering both `reflow:
+  false` (line-preserving wrap) and default `reflow: true` (paragraph reflow)
+  behavior.
+
+### Documentation
+
+- Updated YARD documentation for `Kramdown::ANSI::Width.wrap` to describe the
+  new `reflow:` option.
+
 ## 2026-10-29 v0.8.0
 
 ### Fixes
