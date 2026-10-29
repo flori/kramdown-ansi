@@ -550,7 +550,7 @@ class Kramdown::ANSI < Kramdown::Converter::Base
     return '' if cols.empty?
     col_widths     = cols.map { |c| display_width(c) }
     col_widths_sum = col_widths.sum
-    full_width     = width(percentage: 90)
+    full_width     = width(percentage: 90) - (3 * cols.size + 1)
     ratios         = cols.each_with_index.map do |c, i|
       if col_widths_sum.zero?
         1.0 / cols.size
