@@ -1,5 +1,34 @@
 # Changes
 
+## 2026-10-29 v0.8.0
+
+### Fixes
+
+- Fixed table width overflow by restructuring column width calculation from
+  per-row to per-table in `convert_table`, ensuring `Terminal::Table` is not
+  forced wider than the terminal by a single row's content distribution.
+- Fixed a bug in `Kramdown::ANSI::Width.wrap` where a newline was incorrectly
+  prepended to the first token when it exceeded the target length, eliminating
+  phantom blank lines in narrow table cells.
+- Subtracted table chrome (border, padding, and separator overhead) from the
+  column width budget in `convert_table` to prevent tables from exceeding
+  width.
+
+### Improvements
+
+- Simplified `convert_tr` to read pre-computed column widths and wrap each cell
+  to its fixed budget.
+
+### Build & CI
+
+- Updated the minimum version of the `gem_hadar` development dependency to
+  **2.21.0**.
+- Bumped `rubygems_version` to **4.0.23**.
+
+### Testing
+
+- Regenerated `spec/assets/tables.ansi` golden file.
+
 ## 2026-10-22 v0.7.0
 
 ### Fixes
