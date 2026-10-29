@@ -43,6 +43,18 @@ describe Kramdown::ANSI::Width do
         "AAAAAAAAAA AAAAAAAAAA AAAAAAAAAA AAAAAAAAAA AAAAAAAAAA"
       )
     end
+
+    it 'wraps each line independently with reflow: false' do
+      text   = "aaaa bbbb cccc\ndddd eeee"
+      result = described_class.wrap(text, length: 9, reflow: false)
+      expect(result).to eq("aaaa bbbb\ncccc\ndddd eeee")
+    end
+
+    it 'reflows all lines as one paragraph by default' do
+      text   = "aaaa\nbbbb cccc"
+      result = described_class.wrap(text, length: 9)
+      expect(result).to eq("aaaa\nbbbb\ncccc")
+    end
   end
 
   describe '.truncate' do

@@ -54,12 +54,16 @@ module Kramdown::ANSI::Width
   # @param text [String] the text to wrap
   # @option percentage [Numeric] the percentage of terminal width to use
   # @option length [Integer] the explicit character width to wrap to
+  # @option reflow [Boolean] when true (default), newlines are treated as
+  #   whitespace and the text is re-flowed as a single paragraph; when
+  #   false, each line is wrapped independently and original line breaks
+  #   are preserved
   # @return [String] the wrapped string, preserving ANSI escape sequences
   # @raise [ArgumentError] if neither `percentage` nor `length` is provided
   # @example
   #   Kramdown::ANSI::Width.wrap("Hello world!", percentage: 50)
   #   # => "Hello\nworld!"
-  def wrap(text, percentage: nil, length: nil)
+  def wrap(text, percentage: nil, length: nil, reflow: true)
     percentage.nil? ^ length.nil? or
       raise ArgumentError, "either pass percentage or length argument"
     percentage and length ||= width(percentage:)
@@ -70,6 +74,9 @@ module Kramdown::ANSI::Width
       return text
     end
     length = length.clamp(1..)
+    unless reflow
+      return text.lines.map { |l| wrap(l.chomp, length:, reflow: true) } * ?\n
+    end
     length_without_ansi = 0
     result = +''
     text.scan(/(?<nws>\S+)|(?<ws>\s)/) do
