@@ -55,6 +55,16 @@ describe Kramdown::ANSI::Width do
       result = described_class.wrap(text, length: 9)
       expect(result).to eq("aaaa\nbbbb\ncccc")
     end
+
+    it 'can wrap strings containing ANSI Escape sequences' do
+      cell = "\e[1m#{'word ' * 20}\e[0m😼"
+      wrapped = described_class.wrap(cell, length: 50)
+      expect(wrapped).to eq(<<~EOT.chomp)
+        \e[1mword word word word word word word word word word
+        word word word word word word word word word word
+        \e[0m😼
+      EOT
+    end
   end
 
   describe '.truncate' do
