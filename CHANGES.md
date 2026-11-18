@@ -1,5 +1,23 @@
 # Changes
 
+## 2026-11-18 v0.10.0
+
+### Improvements
+
+- Relaxed the `json` runtime dependency constraint from `~> 2.0` to `>= 2.0`,
+  `< 4` to allow compatibility with `json` 3.x.
+- Removed Vim modelines from `Gemfile` and `Rakefile`.
+
+### Build & CI
+
+- Bumped the `gem_hadar` development dependency requirement to `>= 2.24.1`.
+- Updated `rubygems_version` in the gemspec to `4.0.24`.
+
+### Testing
+
+- Added a spec for `Kramdown::ANSI::Width.wrap` to verify correct width
+  calculation and wrapping of strings containing ANSI escape sequences.
+
 ## 2026-10-29 v0.9.0
 
 ### Features
